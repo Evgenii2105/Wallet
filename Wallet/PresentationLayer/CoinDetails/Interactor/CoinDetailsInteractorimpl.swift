@@ -9,4 +9,10 @@ import UIKit
 
 final class CoinDetailsInteractorimpl: CoinDetailsInteractor {
     
+    weak var presenter: CoinDetailsPresenter?
+    private let router: CoinDetailsRouter
+    
+    init(router: CoinDetailsRouter) {
+        self.router = router
+    }
 }

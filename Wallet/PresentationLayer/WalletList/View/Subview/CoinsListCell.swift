@@ -15,7 +15,13 @@ final class CoinsListCell: UITableViewCell {
     private let imageCoins: UIImageView = {
         let imageCoins = UIImageView()
         imageCoins.image = UIImage(systemName: "photo")
-        imageCoins.tintColor = .black
+        imageCoins.tintColor = UIColor(
+            red: 251 / 255,
+            green: 229 / 255,
+            blue: 199 / 255,
+            alpha: 1
+        )
+            
         return imageCoins
     }()
     
@@ -58,6 +64,7 @@ final class CoinsListCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -65,6 +72,12 @@ final class CoinsListCell: UITableViewCell {
     }
     
     private func setupUI() {
+        contentView.backgroundColor = UIColor(
+            red: 247 / 255,
+            green: 247 / 255,
+            blue: 250 / 255,
+            alpha: 1.0
+        )
         contentView.addSubview(imageCoins)
         contentView.addSubview(nameLabel)
         contentView.addSubview(shortNameLabel)
@@ -73,10 +86,62 @@ final class CoinsListCell: UITableViewCell {
     }
     
     private func setupConstraints() {
+        nameLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(12)
+            make.leading.equalTo(imageCoins.snp.trailing).offset(12)
+        }
         
+        shortNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom).offset(8)
+            make.leading.equalTo(imageCoins.snp.trailing).offset(12)
+            make.bottom.equalToSuperview().offset(-8)
+        }
+        
+        priceLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(12)
+            make.trailing.equalTo(-12)
+        }
+        
+        changeLabel.snp.makeConstraints { make in
+            make.top.equalTo(priceLabel.snp.bottom).offset(12)
+            make.trailing.equalTo(-12)
+            make.bottom.equalToSuperview().offset(-8)
+        }
+        
+        imageCoins.snp.makeConstraints { make in
+            make.leading.equalTo(12)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(40)
+        }
+    }
+    
+    private func formatPrice(_ price: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.groupingSeparator = "."
+        formatter.decimalSeparator = "."
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+        
+        return formatter.string(from: NSNumber(value: price)) ?? "\(price)"
     }
     
     func configure(with coin: WalletListItem) {
-        nameLabel.text 
+        nameLabel.text = coin.name
+        priceLabel.text = formatPrice(coin.price)
+        imageCoins.image = coin.image
+        shortNameLabel.text = coin.symbol
+        let changeText = formatPrice(coin.changePrice)
+        let attachment = NSTextAttachment()
+        
+        if coin.changePrice > 0 {
+            attachment.image = UIImage(systemName: "chevron.compact.up")?.withTintColor(.green)
+        } else {
+            attachment.image = UIImage(systemName: "chevron.compact.down")?.withTintColor(.red)
+        }
+        
+        let attributedString = NSMutableAttributedString(attachment: attachment)
+        attributedString.append(NSAttributedString(string: "  \(changeText)"))
+        changeLabel.attributedText = attributedString
     }
 }

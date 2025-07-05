@@ -10,10 +10,10 @@ import UIKit
 
 final class LoginModuleBuilder {
     
-    static func build() -> UIViewController {
+    static func build(with listener: LoginListener) -> UIViewController {
         let view = LoginViewController()
         let router = LoginRouterimpl()
-        let alert = makeAlert()
+        let alert = AlertFactoryServiceImpl()
         let interactor = LoginInteractorimpl(
             router: router,
             alertFactory: alert
@@ -27,6 +27,7 @@ final class LoginModuleBuilder {
         interactor.router = router
         router.viewController = view
         presenter.view = view
+        interactor.listener = listener
         
         return view
     }

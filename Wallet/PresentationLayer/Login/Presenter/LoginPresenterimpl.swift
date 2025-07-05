@@ -23,5 +23,7 @@ final class LoginPresenterimpl: LoginPresenter {
 }
 
 extension LoginPresenterimpl: LoginPresenterOutput {
-    
+    func clearTextField() {
+        view?.clearTextField()
+    }
 }

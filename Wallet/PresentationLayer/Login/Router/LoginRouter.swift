@@ -8,6 +8,5 @@
 import Foundation
 
 protocol LoginRouter: AnyObject {
-    func openWallet()
     func showAlert(alert: AlertContentPresentable)
 }

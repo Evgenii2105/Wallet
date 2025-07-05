@@ -13,6 +13,7 @@ final class LoginInteractorimpl: LoginInteractor {
     var router: LoginRouter
     var userStorage = UserStorageImpl()
     var alertFactory: AlertFactoryService
+    weak var listener: LoginListener?
     
     init(router: LoginRouter, alertFactory: AlertFactoryService) {
         self.router = router
@@ -22,16 +23,23 @@ final class LoginInteractorimpl: LoginInteractor {
     func handleAuth(login: String?, password: String?) {
         guard let login, !login.isEmpty,
             let password, !password.isEmpty else {
-            let alert = alertFactory.failureLoginIsEmpty(message: "Введите логин и пароль")
+            let alert = alertFactory.failureLoginIsEmpty(message: "Введите логин и пароль", handler: self)
             router.showAlert(alert: alert)
             return
         }
         switch userStorage.validateUserPassword(login: login, password: password) {
         case .success:
-            router.openWallet()
+            listener?.didLogin()
         case .wrongPassword:
-            let alert = alertFactory.failureLoginIsEmpty(message: "Введите корректный логин и пароль")
+            let alert = alertFactory.failureLoginIsEmpty(message: "Введите корректный логин и пароль",
+                                                         handler: self)
             router.showAlert(alert: alert)
         }
+    }
+}
+
+extension LoginInteractorimpl: AlertActionHandler {
+    func handleAlertCancelAction() {
+        presenter?.clearTextField()
     }
 }

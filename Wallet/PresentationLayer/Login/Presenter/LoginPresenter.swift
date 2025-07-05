@@ -12,4 +12,5 @@ protocol LoginPresenter: AnyObject {
 }
 
 protocol LoginPresenterOutput: AnyObject {
+    func clearTextField()
 }

@@ -8,44 +8,23 @@
 import UIKit
 
 final class RootContainerRouterImpl: RootContainerRouter {
-    
+   
     weak var viewController: UIViewController?
+    private weak var loginViewController: UIViewController?
     
-    func showLoginScreen() {
-        let view = LoginViewController()
-        let router = LoginRouterimpl()
-        let alert = makeAlert()
-        let interactor = LoginInteractorimpl(
-            router: router, alertFactory: alert
-        
-        )
-        let presenter = LoginPresenterimpl(
-            view: view,
-            interactor: interactor
-        )
-        view.presenter = presenter
-        presenter.view = view
-        interactor.router = router
-        interactor.presenter = presenter
-        router.viewController = view
-        
-        viewController?.addChildViewController(view)
+    func showLoginScreen(with listener: LoginListener) {
+        let loginViewController = LoginModuleBuilder.build(with: listener)
+        self.loginViewController = loginViewController
+        viewController?.addChildViewController(loginViewController)
     }
     
     func showWalletTabBar() {
-        let view = WalletListViewController()
-        let router = WalletListRouterimpl()
-        let interactor = WalletListInteractorimpl(router: router)
-        let presenter = WalletListPresenterimpl(
-            view: view,
-            interactor: interactor
-        )
-        view.presenter = presenter
-        presenter.view = view
-        interactor.presenter = presenter
-        interactor.router = router
-        router.viewController = view
-        
-        viewController?.addChildViewController(view)
+        viewController?.addChildViewController(MainTabBarController())
+    }
+    
+    func replaceLoginWithWallet() {
+        guard let childViewController = loginViewController else { return }
+        viewController?.removeChildViewController(childViewController)
+        showWalletTabBar()
     }
 }

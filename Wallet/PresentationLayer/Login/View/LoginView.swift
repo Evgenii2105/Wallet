@@ -8,5 +8,5 @@
 import Foundation
 
 protocol LoginView: AnyObject {
-    
+    func clearTextField()
 }

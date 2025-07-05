@@ -22,7 +22,8 @@ final class UserStorageImpl: UserStorage {
     private let hardcodedPassword = "1234"
     
     var isUserLoggedIn: Bool {
-        return !UserDefaults.standard.bool(forKey: "isUserLoggedIn")
+        guard userDefaults.object(forKey: "isUserLoggedIn") != nil else { return false }
+        return UserDefaults.standard.bool(forKey: "isUserLoggedIn")
     }
     
     static let sharedInstance = UserStorageImpl()

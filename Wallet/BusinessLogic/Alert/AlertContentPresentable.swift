@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol AlertActionHandler: AnyObject {
+    func handleAlertCancelAction()
+}
+
 protocol AlertContentPresentable {
     var alert: UIViewController { get }
     var isAnimated: Bool { get }
@@ -19,17 +23,24 @@ struct AlertContent: AlertContentPresentable {
 }
 
 protocol AlertFactoryService: AnyObject {
-    func failureLoginIsEmpty(message: String) -> AlertContentPresentable
+    func failureLoginIsEmpty(message: String, handler: AlertActionHandler) -> AlertContentPresentable
 }
 
-final class makeAlert: AlertFactoryService {
-    func failureLoginIsEmpty(message: String) -> AlertContentPresentable {
+final class AlertFactoryServiceImpl: AlertFactoryService {
+    func failureLoginIsEmpty(message: String, handler: AlertActionHandler) -> AlertContentPresentable {
         let alert = UIAlertController(
             title: "Ошибка",
             message: "Введите правильный логин и пароль",
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(
+            title: "Отменить",
+            style: .destructive,
+            handler: { _ in
+                handler.handleAlertCancelAction()
+            })
+        )
+        alert.addAction(UIAlertAction(title: "Повторить", style: .cancel))
         
         return AlertContent(
             alert: alert,

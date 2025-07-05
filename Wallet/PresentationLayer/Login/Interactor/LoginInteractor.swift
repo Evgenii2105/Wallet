@@ -10,3 +10,7 @@ import Foundation
 protocol LoginInteractor: AnyObject {
     func handleAuth(login: String?, password: String?)
 }
+
+protocol LoginListener: AnyObject {
+    func didLogin()
+}

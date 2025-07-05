@@ -14,7 +14,7 @@ final class LoginViewController: UIViewController {
     
     private enum Constants {
         static let color = UIColor.white
-        static let layerRaduis: CGFloat = 16
+        static let layerRaduis: CGFloat = 24
         static let backgroundColorTextField = UIColor.white
         
         static let textFieldHeight: CGFloat = 50
@@ -33,11 +33,10 @@ final class LoginViewController: UIViewController {
     private let userNameTextField: UITextField = {
         let userNameTextField = UITextField()
         userNameTextField.attributedPlaceholder = NSAttributedString(
-            string: "UserName",
+            string: "Username",
             attributes: [.foregroundColor: UIColor.lightGray]
         )
-        userNameTextField.borderStyle = .roundedRect
-        userNameTextField.layer.cornerRadius = Constants.layerRaduis
+        userNameTextField.layer.cornerRadius = 24
         userNameTextField.backgroundColor = Constants.backgroundColorTextField
         
         let userImage = UIImageView(image: UIImage(named: "user"))
@@ -45,8 +44,9 @@ final class LoginViewController: UIViewController {
         
         let imageContainer = UIView(
             frame: CGRect(
-                x: 0, y: 0, width: 40, height: 30)
+                x: 0, y: 0, width: 40 + 8, height: 30)
         )
+        userImage.frame = CGRect(x: 8, y: 0, width: 40, height: 30)
         imageContainer.addSubview(userImage)
         userNameTextField.leftView = imageContainer
         userNameTextField.leftViewMode = .always
@@ -59,8 +59,7 @@ final class LoginViewController: UIViewController {
             string: "Password",
             attributes: [.foregroundColor: UIColor.lightGray]
         )
-        userPasswordTextField.borderStyle = .roundedRect
-        userPasswordTextField.layer.cornerRadius = Constants.layerRaduis
+        userPasswordTextField.layer.cornerRadius = 24
         userPasswordTextField.backgroundColor = Constants.backgroundColorTextField
         
         let passwordImage = UIImageView(image: UIImage(named: "passwordcoin") )
@@ -68,8 +67,9 @@ final class LoginViewController: UIViewController {
         
         let imageContainer = UIView(
             frame: CGRect(
-                x: 0, y: 0, width: 40, height: 30)
+                x: 0, y: 0, width: 40 + 8, height: 30)
         )
+        passwordImage.frame = CGRect(x: 8, y: 0, width: 40, height: 30)
         imageContainer.addSubview(passwordImage)
         userPasswordTextField.leftView = imageContainer
         userPasswordTextField.leftViewMode = .always
@@ -80,7 +80,12 @@ final class LoginViewController: UIViewController {
         let loginButton = UIButton()
         loginButton.setTitle("Login", for: .normal)
         loginButton.tintColor = .white
-        loginButton.backgroundColor = .black
+        loginButton.backgroundColor = UIColor(
+            red: 26 / 255,
+            green: 28 / 255,
+            blue: 48 / 255,
+            alpha: 1.0
+        )
         loginButton.layer.cornerRadius = Constants.layerRaduis
         return loginButton
     }()
@@ -92,10 +97,16 @@ final class LoginViewController: UIViewController {
         setupConstraints()
         textFieldDelegate()
         setupActions()
+        tapGesture()
     }
     
     private func setupUI() {
-        view.backgroundColor = .lightGray
+        view.backgroundColor = UIColor(
+                    red: 243 / 255,
+                    green: 245 / 255,
+                    blue: 246 / 255,
+                    alpha: 1.0
+        )
         view.addSubview(containerImage)
         view.addSubview(userNameTextField)
         view.addSubview(userPasswordTextField)
@@ -103,15 +114,14 @@ final class LoginViewController: UIViewController {
     }
     
     private func setupActions() {
-        print("Кнопка нажата")
         loginButton.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
     }
     
     private func setupConstraints() {
         containerImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(60)
-            make.width.height.equalTo(120)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(-20)
+            make.width.height.equalTo(280)
         }
         
         userNameTextField.snp.makeConstraints { make in
@@ -140,13 +150,25 @@ final class LoginViewController: UIViewController {
     
     @objc
     private func handleLogin() {
-        print("Кнопка нажата")
         presenter?.handleAuth(login: userNameTextField.text, password: userPasswordTextField.text)
+    }
+    
+    private func tapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc
+    private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 
 extension LoginViewController: LoginView {
-    
+    func clearTextField() {
+        userNameTextField.text = ""
+        userPasswordTextField.text = ""
+    }
 }
 
 extension LoginViewController: UITextFieldDelegate {
@@ -160,3 +182,36 @@ extension LoginViewController: UITextFieldDelegate {
         return true
     }
 }
+
+//private extension LoginViewController {
+//    
+//    func setupNotifications() {
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(keyboardWillShow),
+//                                               name: UIResponder.keyboardWillShowNotification,
+//                                               object: nil)
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(keyboardWillHide),
+//                                               name: UIResponder.keyboardWillHideNotification,
+//                                               object: nil)
+//    }
+//    
+//    @objc
+//    func keyboardWillShow(notification: NSNotification) {
+//        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+//            return
+//        }
+//        
+//        let keyboardHeight = keyboardSize.height
+//        var contentInset = scrollView.contentInset
+//        contentInset.bottom = keyboardHeight
+//        scrollView.contentInset = contentInset
+//        scrollView.scrollIndicatorInsets = scrollView.contentInset
+//    }
+//    
+//    @objc
+//    func keyboardWillHide(notification: NSNotification) {
+//        scrollView.contentInset = UIEdgeInsets.zero
+//        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+//    }
+//}

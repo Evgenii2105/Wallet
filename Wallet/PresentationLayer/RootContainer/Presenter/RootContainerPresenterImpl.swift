@@ -27,7 +27,14 @@ final class RootContainerPresenterImpl: RootContainerPresenter {
         case .loggedIn:
             router.showWalletTabBar()
         case .loggedOut:
-            router.showLoginScreen()
+            router.showLoginScreen(with: self)
         }
+    }
+}
+
+extension RootContainerPresenterImpl: LoginListener {
+    
+    func didLogin() {
+        router.replaceLoginWithWallet()
     }
 }
