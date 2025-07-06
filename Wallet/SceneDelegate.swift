@@ -16,9 +16,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         
-        let state: RootContainerPresenterImpl.State = UserStorageImpl.sharedInstance.isUserLoggedIn ? .loggedIn : .loggedOut
+        let userStorage: UserStorage = UserStorageImpl()
+        let state: RootContainerPresenterImpl.State = userStorage.isUserLoggedIn ? .loggedIn : .loggedOut
         window?.rootViewController = RootContainerBuilder.build(
-            userStorage: UserStorageImpl.sharedInstance,
+            userStorage: userStorage,
             state: state
         )
         

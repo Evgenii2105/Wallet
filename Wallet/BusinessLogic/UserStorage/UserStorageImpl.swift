@@ -31,7 +31,6 @@ final class UserStorageImpl: UserStorage {
         return UserDefaults.standard.bool(forKey: "isUserLoggedIn")
     }
     
-    static let sharedInstance = UserStorageImpl()
     private let userDefaults = UserDefaults.standard
     
     init() {
