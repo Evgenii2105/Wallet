@@ -10,19 +10,26 @@ import UIKit
 
 final class LoginViewController: UIViewController {
     
-    // MARK: Subtypes
+    // MARK: Constants
     
     private enum Constants {
         static let color = UIColor.white
-        static let layerRaduis: CGFloat = 24
+        static let layerRadius: CGFloat = 24
         static let backgroundColorTextField = UIColor.white
         
         static let textFieldHeight: CGFloat = 50
+        static let leadingPadding: CGFloat = 8
         static let horizontalPadding: CGFloat = 32
         static let verticalSpacing: CGFloat = 20
+        static let width: CGFloat = 40
+        static let height: CGFloat = 30
     }
     
+    // MARK: Internal Properties
+    
     var presenter: LoginPresenter?
+    
+    // MARK: Private Properties
     
     private let containerImage: UIImageView = {
         let containerImage = UIImageView()
@@ -36,7 +43,7 @@ final class LoginViewController: UIViewController {
             string: "Username",
             attributes: [.foregroundColor: UIColor.lightGray]
         )
-        userNameTextField.layer.cornerRadius = 24
+        userNameTextField.layer.cornerRadius = Constants.layerRadius
         userNameTextField.backgroundColor = Constants.backgroundColorTextField
         
         let userImage = UIImageView(image: UIImage(named: "user"))
@@ -44,9 +51,18 @@ final class LoginViewController: UIViewController {
         
         let imageContainer = UIView(
             frame: CGRect(
-                x: 0, y: 0, width: 40 + 8, height: 30)
+                x: 0,
+                y: 0,
+                width: Constants.width + Constants.leadingPadding,
+                height: Constants.height
+            )
         )
-        userImage.frame = CGRect(x: 8, y: 0, width: 40, height: 30)
+        userImage.frame = CGRect(
+            x: Constants.leadingPadding,
+            y: 0,
+            width: Constants.width,
+            height: Constants.height
+        )
         imageContainer.addSubview(userImage)
         userNameTextField.leftView = imageContainer
         userNameTextField.leftViewMode = .always
@@ -59,7 +75,7 @@ final class LoginViewController: UIViewController {
             string: "Password",
             attributes: [.foregroundColor: UIColor.lightGray]
         )
-        userPasswordTextField.layer.cornerRadius = 24
+        userPasswordTextField.layer.cornerRadius = Constants.layerRadius
         userPasswordTextField.backgroundColor = Constants.backgroundColorTextField
         
         let passwordImage = UIImageView(image: UIImage(named: "passwordcoin") )
@@ -67,9 +83,18 @@ final class LoginViewController: UIViewController {
         
         let imageContainer = UIView(
             frame: CGRect(
-                x: 0, y: 0, width: 40 + 8, height: 30)
+                x: 0,
+                y: 0,
+                width: Constants.width + Constants.leadingPadding,
+                height: Constants.height
+            )
         )
-        passwordImage.frame = CGRect(x: 8, y: 0, width: 40, height: 30)
+        passwordImage.frame = CGRect(
+            x: Constants.leadingPadding,
+            y: 0,
+            width: Constants.width,
+            height: Constants.height
+        )
         imageContainer.addSubview(passwordImage)
         userPasswordTextField.leftView = imageContainer
         userPasswordTextField.leftViewMode = .always
@@ -80,16 +105,12 @@ final class LoginViewController: UIViewController {
         let loginButton = UIButton()
         loginButton.setTitle("Login", for: .normal)
         loginButton.tintColor = .white
-        loginButton.backgroundColor = UIColor(
-            red: 26 / 255,
-            green: 28 / 255,
-            blue: 48 / 255,
-            alpha: 1.0
-        )
-        loginButton.layer.cornerRadius = Constants.layerRaduis
+        loginButton.backgroundColor = Colors.loginButtonBackground
+        loginButton.layer.cornerRadius = Constants.layerRadius
         return loginButton
     }()
     
+    // MARK: Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,13 +121,10 @@ final class LoginViewController: UIViewController {
         tapGesture()
     }
     
+    // MARK: Func
+    
     private func setupUI() {
-        view.backgroundColor = UIColor(
-                    red: 243 / 255,
-                    green: 245 / 255,
-                    blue: 246 / 255,
-                    alpha: 1.0
-        )
+        view.backgroundColor = Colors.loginBackground
         view.addSubview(containerImage)
         view.addSubview(userNameTextField)
         view.addSubview(userPasswordTextField)
@@ -164,12 +182,16 @@ final class LoginViewController: UIViewController {
     }
 }
 
+// MARK: - LoginView
+
 extension LoginViewController: LoginView {
     func clearTextField() {
         userNameTextField.text = ""
         userPasswordTextField.text = ""
     }
 }
+
+// MARK: - UITextFieldDelegate
 
 extension LoginViewController: UITextFieldDelegate {
     

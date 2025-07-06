@@ -12,13 +12,13 @@ final class LoginModuleBuilder {
     
     static func build(with listener: LoginListener) -> UIViewController {
         let view = LoginViewController()
-        let router = LoginRouterimpl()
+        let router = LoginRouterImpl()
         let alert = AlertFactoryServiceImpl()
-        let interactor = LoginInteractorimpl(
+        let interactor = LoginInteractorImpl(
             router: router,
             alertFactory: alert
         )
-        let presenter = LoginPresenterimpl(
+        let presenter = LoginPresenterImpl(
             view: view,
             interactor: interactor
         )

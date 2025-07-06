@@ -16,5 +16,5 @@ protocol WalletListPresenter: AnyObject {
 }
 
 protocol WalletListPresenterOutput: AnyObject {
-    func didCoins(coins: [WalletListItem])
+    func didGet(walletListItems: [WalletListItem])
 }

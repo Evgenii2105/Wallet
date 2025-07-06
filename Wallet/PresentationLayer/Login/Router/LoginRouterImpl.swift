@@ -1,5 +1,5 @@
 //
-//  LoginRouterimpl.swift
+//  LoginRouterImpl.swift
 //  Wallet
 //
 //  Created by Евгений Фомичев on 02.07.2025.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class LoginRouterimpl: LoginRouter {
+final class LoginRouterImpl: LoginRouter {
     
     weak var viewController: UIViewController?
     

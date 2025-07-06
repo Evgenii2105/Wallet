@@ -1,5 +1,5 @@
 //
-//  UserStorageimpl.swift
+//  UserStorageImpl.swift
 //  Wallet
 //
 //  Created by Евгений Фомичев on 02.07.2025.
@@ -13,10 +13,14 @@ protocol UserStorage: AnyObject {
 
 final class UserStorageImpl: UserStorage {
     
+    // MARK: Internal Properties
+    
     enum ValidationState {
         case success
         case wrongPassword
     }
+    
+    // MARK: Private Properties
     
     private let hardcodedLogin = "1234"
     private let hardcodedPassword = "1234"
@@ -31,6 +35,8 @@ final class UserStorageImpl: UserStorage {
     
     init() {
     }
+    
+    // MARK: Func
     
     func loginUser() {
         userDefaults.set(true, forKey: "isUserLoggedIn")

@@ -8,9 +8,10 @@
 import UIKit
 
 final class RootContainerRouterImpl: RootContainerRouter {
-   
+  
     weak var viewController: UIViewController?
     private weak var loginViewController: UIViewController?
+    private weak var tabBarController: UIViewController?
     
     func showLoginScreen(with listener: LoginListener) {
         let loginViewController = LoginModuleBuilder.build(with: listener)
@@ -18,13 +19,21 @@ final class RootContainerRouterImpl: RootContainerRouter {
         viewController?.addChildViewController(loginViewController)
     }
     
-    func showWalletTabBar() {
-        viewController?.addChildViewController(MainTabBarController())
+    func showWalletTabBar(with listener: WalletListListener) {
+        let walletTabBarController = MainTabBarController(walletListListener: listener)
+        self.tabBarController = walletTabBarController
+        viewController?.addChildViewController(walletTabBarController)
     }
     
-    func replaceLoginWithWallet() {
+    func replaceLoginWithWallet(with listener: WalletListListener) {
         guard let childViewController = loginViewController else { return }
         viewController?.removeChildViewController(childViewController)
-        showWalletTabBar()
+        showWalletTabBar(with: listener)
+    }
+    
+    func replaceWalletWithLogin(with listener: LoginListener) {
+        guard let childViewController = tabBarController else { return }
+        viewController?.removeChildViewController(childViewController)
+        showLoginScreen(with: listener)
     }
 }

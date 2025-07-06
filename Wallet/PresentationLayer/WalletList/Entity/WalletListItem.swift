@@ -16,3 +16,17 @@ struct WalletListItem {
     let changePrice: Double
     let image: UIImage?
 }
+
+extension CoinData {
+    
+    func mapToItem() -> WalletListItem {
+        return WalletListItem(
+            id: self.id,
+            symbol: self.symbol,
+            name: self.name,
+            price: self.metrics.marketData.priceUSD,
+            changePrice: self.metrics.marketData.percentChangeUSDLast24Hours,
+            image: nil
+        )
+    }
+}

@@ -13,13 +13,30 @@ protocol TabBarConfiguration {
 
 final class MainTabBarController: UITabBarController {
     
+    // MARK: Private Internal
+    
+    private weak var walletListListener: WalletListListener?
+    
+    // MARK: Lifecycle
+    
+    init(walletListListener: WalletListListener?) {
+        self.walletListListener = walletListListener
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabs()
     }
     
+    // MARK: Func
+    
     private func setupTabs() {
-        let walletList = WalletListBuilder.build()
+        let walletList = WalletListBuilder.build(listener: walletListListener)
         let walletNavigation = UINavigationController(rootViewController: walletList)
         walletNavigation.tabBarItem = createTabItem(for: walletList, index: 0)
         

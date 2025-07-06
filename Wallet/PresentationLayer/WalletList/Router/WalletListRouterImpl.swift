@@ -7,19 +7,17 @@
 
 import UIKit
 
-final class WalletListRouterimpl: WalletListRouter {
-    
+final class WalletListRouterImpl: WalletListRouter {
+
     weak var viewController: UIViewController?
     
-    func didLogout() {
-        
-    }
-    
-    func showDetailsCoin(coin: WalletListItem) {
+    func showDetailsCoin(coin: CoinData) {
         let view = CoinDetailsViewController()
-        let router = CoinDetailsRouterimpl()
-        let interactor = CoinDetailsInteractorimpl(router: router)
-        let presenter = CoinDetailsPresenterimpl(
+        let router = CoinDetailsRouterImpl()
+        let interactor = CoinDetailsInteractorImpl(
+            coin: coin,
+            router: router)
+        let presenter = CoinDetailsPresenterImpl(
             view: view,
             interactor: interactor
         )

@@ -10,7 +10,18 @@ import UIKit
 
 final class CoinsListCell: UITableViewCell {
     
-    static let cellidentifier = "CoinsListCell"
+    // MARK: Constants
+    
+    private enum Constants {
+        static let twelvePadding: CGFloat = 12
+        static let eightPadding: CGFloat = 8
+    }
+    
+    // MARK: Internal Properties
+    
+    static let cellIdentifier = "CoinsListCell"
+    
+    // MARK: Private Properties
     
     private let imageCoins: UIImageView = {
         let imageCoins = UIImageView()
@@ -61,6 +72,8 @@ final class CoinsListCell: UITableViewCell {
         return changeLabel
     }()
     
+    // MARK: Lifecycle
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -71,13 +84,10 @@ final class CoinsListCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: Func
+    
     private func setupUI() {
-        contentView.backgroundColor = UIColor(
-            red: 247 / 255,
-            green: 247 / 255,
-            blue: 250 / 255,
-            alpha: 1.0
-        )
+        contentView.backgroundColor = Colors.coinCellBackground
         contentView.addSubview(imageCoins)
         contentView.addSubview(nameLabel)
         contentView.addSubview(shortNameLabel)
@@ -87,29 +97,29 @@ final class CoinsListCell: UITableViewCell {
     
     private func setupConstraints() {
         nameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(12)
-            make.leading.equalTo(imageCoins.snp.trailing).offset(12)
+            make.top.equalToSuperview().offset(Constants.twelvePadding)
+            make.leading.equalTo(imageCoins.snp.trailing).offset(Constants.twelvePadding)
         }
         
         shortNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(8)
-            make.leading.equalTo(imageCoins.snp.trailing).offset(12)
-            make.bottom.equalToSuperview().offset(-8)
+            make.top.equalTo(nameLabel.snp.bottom).offset(Constants.eightPadding)
+            make.leading.equalTo(imageCoins.snp.trailing).offset(Constants.twelvePadding)
+            make.bottom.equalToSuperview().offset(-Constants.eightPadding)
         }
         
         priceLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(12)
-            make.trailing.equalTo(-12)
+            make.top.equalToSuperview().offset(Constants.twelvePadding)
+            make.trailing.equalTo(-Constants.twelvePadding)
         }
         
         changeLabel.snp.makeConstraints { make in
-            make.top.equalTo(priceLabel.snp.bottom).offset(12)
+            make.top.equalTo(priceLabel.snp.bottom).offset(Constants.twelvePadding)
             make.trailing.equalTo(-12)
-            make.bottom.equalToSuperview().offset(-8)
+            make.bottom.equalToSuperview().offset(-Constants.eightPadding)
         }
         
         imageCoins.snp.makeConstraints { make in
-            make.leading.equalTo(12)
+            make.leading.equalTo(Constants.twelvePadding)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(40)
         }

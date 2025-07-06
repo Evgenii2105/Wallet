@@ -8,5 +8,10 @@
 import Foundation
 
 protocol CoinDetailsPresenter: AnyObject {
-    
+    func setupDataSource()
+    func timePeriodChanged(to period: CoinDetailsViewController.TimePeriod)
+}
+
+protocol CoinDetailsPresenterOutput: AnyObject {
+    func didGet(coin: CoinData, period: CoinDetailsViewController.TimePeriod)
 }

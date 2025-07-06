@@ -8,5 +8,5 @@
 import Foundation
 
 protocol CoinDetailsView: AnyObject {
-    
+    func didGet(coin: CoinData, period: CoinDetailsViewController.TimePeriod)
 }

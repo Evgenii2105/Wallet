@@ -8,6 +8,5 @@
 import Foundation
 
 protocol WalletListRouter: AnyObject {
-    func didLogout()
-    func showDetailsCoin(coin: WalletListItem)
+    func showDetailsCoin(coin: CoinData)
 }

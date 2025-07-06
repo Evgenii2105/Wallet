@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class CoinDetailsRouterimpl: CoinDetailsRouter {
+final class CoinDetailsRouterImpl: CoinDetailsRouter {
     
     weak var viewController: UIViewController?
 }

@@ -8,5 +8,6 @@
 import Foundation
 
 protocol CoinDetailsInteractor: AnyObject {
-    
+    func setupDataSource()
+    func timePeriodChanged(to period: CoinDetailsViewController.TimePeriod)
 }

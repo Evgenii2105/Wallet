@@ -25,7 +25,7 @@ final class RootContainerPresenterImpl: RootContainerPresenter {
     func showScreen() {
         switch state {
         case .loggedIn:
-            router.showWalletTabBar()
+            router.showWalletTabBar(with: self)
         case .loggedOut:
             router.showLoginScreen(with: self)
         }
@@ -35,6 +35,13 @@ final class RootContainerPresenterImpl: RootContainerPresenter {
 extension RootContainerPresenterImpl: LoginListener {
     
     func didLogin() {
-        router.replaceLoginWithWallet()
+        router.replaceLoginWithWallet(with: self)
+    }
+}
+
+extension RootContainerPresenterImpl: WalletListListener {
+    
+    func needsToLogout() {
+        router.replaceWalletWithLogin(with: self)
     }
 }

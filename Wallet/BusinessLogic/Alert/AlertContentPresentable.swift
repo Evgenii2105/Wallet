@@ -16,17 +16,18 @@ protocol AlertContentPresentable {
     var isAnimated: Bool { get }
 }
 
-struct AlertContent: AlertContentPresentable {
-    var alert: UIViewController
-    
-    var isAnimated: Bool
-}
-
 protocol AlertFactoryService: AnyObject {
     func failureLoginIsEmpty(message: String, handler: AlertActionHandler) -> AlertContentPresentable
 }
 
+struct AlertContent: AlertContentPresentable {
+    
+    var alert: UIViewController
+    var isAnimated: Bool
+}
+
 final class AlertFactoryServiceImpl: AlertFactoryService {
+    
     func failureLoginIsEmpty(message: String, handler: AlertActionHandler) -> AlertContentPresentable {
         let alert = UIAlertController(
             title: "Ошибка",

@@ -9,11 +9,14 @@ import UIKit
 
 final class WalletListBuilder {
     
-    static func build() -> WalletListViewController {
+    static func build(listener: WalletListListener?) -> WalletListViewController {
         let view = WalletListViewController()
-        let router = WalletListRouterimpl()
-        let interactor = WalletListInteractorimpl(router: router)
-        let presenter = WalletListPresenterimpl(
+        let router = WalletListRouterImpl()
+        let interactor = WalletListInteractorImpl(
+            router: router,
+            listener: listener
+        )
+        let presenter = WalletListPresenterImpl(
             view: view,
             interactor: interactor
         )

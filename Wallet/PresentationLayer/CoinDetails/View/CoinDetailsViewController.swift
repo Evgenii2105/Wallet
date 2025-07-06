@@ -10,19 +10,59 @@ import UIKit
 
 final class CoinDetailsViewController: UIViewController {
     
+    // MARK: Constants
+    
+    private enum Constants {
+        static let sixteenPadding: CGFloat = 16
+    }
+    
+    // MARK: Internal Properties
+    
     enum TimePeriod: String, CaseIterable {
         case day = "Day"
         case week = "Week"
         case year = "Year"
         case all = "All"
+        case point = "Point"
+        
+        var segmentIndex: Int {
+            switch self {
+            case .day:
+                0
+            case .week:
+                1
+            case .year:
+                2
+            case .all:
+                3
+            case .point:
+                4
+            }
+        }
+        
+        init?(index: Int) {
+            guard index >= 0 && index < TimePeriod.allCases.count else { return nil }
+            
+            self = TimePeriod.allCases[index]
+        }
     }
     
     var presenter: CoinDetailsPresenter?
-    private var cellTypes: [CoinDetailsItem] = []
+    
+    // MARK: Private Properties
+    
+    private static let formatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.groupingSeparator = "."
+        formatter.decimalSeparator = "."
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+        return formatter
+    }()
     
     private let priceLabel: UILabel = {
         let priceLabel = UILabel()
-        priceLabel.text = "$ 65.34242"
         priceLabel.textColor = .black
         priceLabel.font = .systemFont(ofSize: 24, weight: .bold)
         return priceLabel
@@ -30,7 +70,6 @@ final class CoinDetailsViewController: UIViewController {
     
     private let changePrice: UILabel = {
         let changePrice = UILabel()
-        changePrice.text = "2.5 %"
         changePrice.font = .systemFont(ofSize: 16, weight: .light)
         changePrice.textColor = .lightGray
         return changePrice
@@ -61,15 +100,15 @@ final class CoinDetailsViewController: UIViewController {
         return marketLabel
     }()
     
-    private let capitatallizationLabel: UILabel = {
-        let capitatallizationLabel = UILabel()
-        capitatallizationLabel.font = .systemFont(ofSize: 18, weight: .light)
-        capitatallizationLabel.textColor = .lightGray
-        capitatallizationLabel.text = "Market capitalization"
-        return capitatallizationLabel
+    private let capitalizationLabel: UILabel = {
+        let capitalizationLabel = UILabel()
+        capitalizationLabel.font = .systemFont(ofSize: 18, weight: .light)
+        capitalizationLabel.textColor = .lightGray
+        capitalizationLabel.text = "Market capitalization"
+        return capitalizationLabel
     }()
     
-    private let suply: UILabel = {
+    private let circulatingSuply: UILabel = {
         let suply = UILabel()
         suply.text = "Circulating Suply"
         suply.font = .systemFont(ofSize: 18, weight: .light)
@@ -116,20 +155,19 @@ final class CoinDetailsViewController: UIViewController {
         return stack
     }()
     
+    // MARK: Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
-        configure(coinDetails: cellTypes)
+        presenter?.setupDataSource()
     }
     
+    // MARK: Func
+    
     private func setupUI() {
-        view.backgroundColor = UIColor(
-            red: 243 / 255,
-            green: 245 / 255,
-            blue: 246 / 255,
-            alpha: 1.0
-        )
+        view.backgroundColor = Colors.coinDetailViewBackground
         view.addSubview(priceLabel)
         view.addSubview(changePrice)
         view.addSubview(timePeriodControl)
@@ -138,52 +176,50 @@ final class CoinDetailsViewController: UIViewController {
         containerView.addSubview(statsStackView)
         statsStackView.addArrangedSubview(marketLabel)
         
-        capitalizationRow.addArrangedSubview(capitatallizationLabel)
+        capitalizationRow.addArrangedSubview(capitalizationLabel)
         capitalizationRow.addArrangedSubview(capitalPriceLabel)
         statsStackView.addArrangedSubview(capitalizationRow)
         
-        supplyRow.addArrangedSubview(suply)
-        supplyRow.addArrangedSubview(suplyLabel)
+        supplyRow.addArrangedSubview(circulatingSuply)
+        supplyRow.addArrangedSubview(circulatingSuply)
         statsStackView.addArrangedSubview(supplyRow)
         
         setupNavigationBar()
-        navigationItem.title = "Bitcoin"
     }
     
     private func setupConstraints() {
         priceLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.sixteenPadding)
             make.centerX.equalToSuperview()
         }
         
         changePrice.snp.makeConstraints { make in
-            make.top.equalTo(priceLabel.snp.bottom).offset(16)
+            make.top.equalTo(priceLabel.snp.bottom).offset(Constants.sixteenPadding)
             make.centerX.equalToSuperview()
         }
         
         timePeriodControl.snp.makeConstraints { make in
-            make.top.equalTo(changePrice.snp.bottom).offset(16)
+            make.top.equalTo(changePrice.snp.bottom).offset(Constants.sixteenPadding)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(32)
         }
         
         containerView.snp.makeConstraints { make in
-          //  make.top.equalTo(timePeriodControl.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
         statsStackView.snp.makeConstraints { make in
-            make.top.equalTo(containerView).offset(16)
-            make.leading.equalTo(containerView).offset(16)
-            make.trailing.equalTo(containerView).offset(-16)
-            make.bottom.equalTo(containerView).offset(-16)
+            make.top.equalTo(containerView).offset(Constants.sixteenPadding)
+            make.leading.equalTo(containerView).offset(Constants.sixteenPadding)
+            make.trailing.equalTo(containerView).offset(-Constants.sixteenPadding)
+            make.bottom.equalTo(containerView).offset(-Constants.sixteenPadding)
         }
-        capitatallizationLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        capitalizationLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
         capitalPriceLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
-        suply.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        suplyLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        circulatingSuply.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        circulatingSuply.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
     private func setupNavigationBar() {
@@ -202,20 +238,65 @@ final class CoinDetailsViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
     }
     
-    @objc private func backButtonTapped() {
+    @objc
+    private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc private func timePeriodChanged() {
-        let selectedPeriod = TimePeriod.allCases[timePeriodControl.selectedSegmentIndex]
-        //presenter?.timePeriodChanged(to: selectedPeriod)
+    func setSelectedPeriod(_ period: TimePeriod) {
+        timePeriodControl.selectedSegmentIndex = period.segmentIndex
     }
     
-    func configure(coinDetails: [CoinDetailsItem]) {
+    @objc
+    private func timePeriodChanged() {
+        guard let period = TimePeriod(index: timePeriodControl.selectedSegmentIndex) else { return }
+        presenter?.timePeriodChanged(to: period)
+    }
+    
+    private func formatPrice(_ price: Double) -> NSAttributedString {
+        let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
+        return NSAttributedString(string: formattedPrice)
+    }
+    
+    private func formatChangePrice(_ price: Double) -> NSAttributedString {
+        let attachment = NSTextAttachment()
+        if price > 0.0 {
+            attachment.image = UIImage(systemName: "chevron.compact.up")?.withTintColor(.green)
+        } else {
+            attachment.image = UIImage(systemName: "chevron.compact.down")?.withTintColor(.red)
+        }
         
+        let attributedString = NSMutableAttributedString(attachment: attachment)
+        let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
+        attributedString.append(NSAttributedString(string: formattedPrice))
+        
+        return attributedString
+    }
+    
+    private func configure(coinDetails: CoinData, period: TimePeriod) {
+        navigationItem.title = coinDetails.name
+        priceLabel.attributedText = formatPrice(coinDetails.metrics.marketData.priceUSD)
+        switch period {
+        case .day:
+            changePrice.attributedText = formatChangePrice(coinDetails.metrics.marketData.percentChangeUSDLast24Hours)
+        case .week:
+            changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneWeek)
+        case .year:
+            changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneMonth)
+        case .all:
+            changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeThreeMonth)
+        case .point:
+            changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneYear ?? 0.0)
+        }
+        capitalPriceLabel.text = "0000"
     }
 }
 
+// MARK: - CoinDetailsView
+
 extension CoinDetailsViewController: CoinDetailsView {
     
+    func didGet(coin: CoinData, period: TimePeriod) {
+        configure(coinDetails: coin, period: period)
+    }
 }

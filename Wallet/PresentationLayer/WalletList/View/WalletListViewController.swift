@@ -9,7 +9,19 @@ import UIKit
 
 final class WalletListViewController: UIViewController {
     
+    // MARK: Constants
+    
+    private enum Constants {
+        static let cornerRadius: CGFloat = 16
+        static let leadingPadding: CGFloat = 20
+    }
+    
+    // MARK: Internal Properties
+    
     var presenter: WalletListPresenter?
+    
+    // MARK: Private Properties
+    
     private var coins: [WalletListItem] = []
     
     private let loadingIndicator: UIActivityIndicatorView = {
@@ -39,24 +51,14 @@ final class WalletListViewController: UIViewController {
     
     private let headerView: UIView = {
         let backView = UIView()
-        backView.backgroundColor = UIColor(
-            red: 241 / 255,
-            green: 159 / 255,
-            blue: 177 / 255,
-            alpha: 1.0
-        )
+        backView.backgroundColor = Colors.walletHeaderBackground
         return backView
     }()
     
     private let coinsTable: UITableView = {
         let coinsTable = UITableView()
-        coinsTable.backgroundColor = UIColor(
-            red: 247 / 255,
-            green: 247 / 255,
-            blue: 250 / 255,
-            alpha: 1.0
-        )
-        coinsTable.layer.cornerRadius = 16
+        coinsTable.backgroundColor = Colors.tableBackground
+        coinsTable.layer.cornerRadius = Constants.cornerRadius
         coinsTable.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         coinsTable.layer.masksToBounds = true
         return coinsTable
@@ -108,7 +110,7 @@ final class WalletListViewController: UIViewController {
         moreButton.setTitle("Learn more", for: .normal)
         moreButton.setTitleColor(.black, for: .normal)
         moreButton.backgroundColor = .white
-        moreButton.layer.cornerRadius = 16
+        moreButton.layer.cornerRadius = Constants.cornerRadius
         return moreButton
     }()
     
@@ -118,6 +120,8 @@ final class WalletListViewController: UIViewController {
         return boxImage
     }()
     
+    // MARK: Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -126,6 +130,8 @@ final class WalletListViewController: UIViewController {
         showLoading()
         presenter?.setupDataSource()
     }
+    
+    // MARK: Func
     
     private func setupUI() {
         view.backgroundColor = .white
@@ -155,7 +161,7 @@ final class WalletListViewController: UIViewController {
     
     private func setupConstraints() {
         loadingStackView.snp.makeConstraints { make in
-            make.center.equalTo(coinsTable)
+           make.center.equalTo(coinsTable)
         }
         
         headerView.snp.makeConstraints { make in
@@ -166,17 +172,17 @@ final class WalletListViewController: UIViewController {
         
         homeLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(50)
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview().offset(Constants.leadingPadding)
         }
         
         affiliateLabel.snp.makeConstraints { make in
             make.top.equalTo(homeLabel.snp.bottom).offset(24)
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview().offset(Constants.leadingPadding)
         }
         
         learnMoreButton.snp.makeConstraints { make in
-            make.top.equalTo(affiliateLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(20)
+            make.top.equalTo(affiliateLabel.snp.bottom).offset(Constants.leadingPadding)
+            make.leading.equalToSuperview().offset(Constants.leadingPadding)
             make.width.equalTo(120)
         }
         
@@ -195,12 +201,14 @@ final class WalletListViewController: UIViewController {
     
     private func createCoinsTable() {
         coinsTable.register(CoinsListHeaderView.self, forHeaderFooterViewReuseIdentifier: CoinsListHeaderView.headerIdentifier)
-        coinsTable.register(CoinsListCell.self, forCellReuseIdentifier: CoinsListCell.cellidentifier)
+        coinsTable.register(CoinsListCell.self, forCellReuseIdentifier: CoinsListCell.cellIdentifier)
         coinsTable.dataSource = self
         coinsTable.delegate = self
         coinsTable.separatorStyle = .none
     }
 }
+
+// MARK: - WalletListView
 
 extension WalletListViewController: WalletListView {
     func didCoins(coins: [WalletListItem]) {
@@ -210,6 +218,8 @@ extension WalletListViewController: WalletListView {
     }
 }
 
+// MARK: - UITableViewDelegate && UITableViewDataSource
+
 extension WalletListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -217,7 +227,7 @@ extension WalletListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CoinsListCell.cellidentifier, for: indexPath) as? CoinsListCell, indexPath.row < coins.count else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CoinsListCell.cellIdentifier, for: indexPath) as? CoinsListCell, indexPath.row < coins.count else {
             return UITableViewCell()
         }
         let coin = coins[indexPath.row]
@@ -232,7 +242,7 @@ extension WalletListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: CoinsListHeaderView.headerIdentifier) as? CoinsListHeaderView else { return nil }
-        header.listiner = self
+        header.delegate = self
         return header
     }
 }
@@ -244,7 +254,9 @@ extension WalletListViewController: TabBarConfiguration {
     var tabImage: UIImage? { nil }
 }
 
-extension WalletListViewController: SortedHeaderViewListiner {
+// MARK: - SortHeaderViewDelegate
+
+extension WalletListViewController: SortHeaderViewDelegate {
     func sortedHeader(by sort: CoinsListHeaderView.CoinsSorting) {
         presenter?.sortedHeader(by: sort)
     }

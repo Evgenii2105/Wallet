@@ -1,5 +1,5 @@
 //
-//  WalletListPresenterimpl.swift
+//  WalletListPresenterImpl.swift
 //  Wallet
 //
 //  Created by Евгений Фомичев on 02.07.2025.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class WalletListPresenterimpl: WalletListPresenter {
+final class WalletListPresenterImpl: WalletListPresenter {
   
     weak var view: WalletListView?
     private let interactor: WalletListInteractor
@@ -34,12 +34,12 @@ final class WalletListPresenterimpl: WalletListPresenter {
     }
     
     func showDetailsCoin(coin: WalletListItem) {
-        interactor.showDetailsCoin(coin: coin)
+        interactor.showDetailsCoin(item: coin)
     }
 }
 
-extension WalletListPresenterimpl: WalletListPresenterOutput {
-    func didCoins(coins: [WalletListItem]) {
-        view?.didCoins(coins: coins)
+extension WalletListPresenterImpl: WalletListPresenterOutput {
+    func didGet(walletListItems: [WalletListItem]) {
+        view?.didCoins(coins: walletListItems)
     }
 }

@@ -11,5 +11,9 @@ protocol WalletListInteractor: AnyObject {
     func setupDataSource()
     func didLogout()
     func sortedHeader(by sort: CoinsListHeaderView.CoinsSorting)
-    func showDetailsCoin(coin: WalletListItem)
+    func showDetailsCoin(item: WalletListItem)
+}
+
+protocol WalletListListener: AnyObject {
+    func needsToLogout()
 }

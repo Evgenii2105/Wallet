@@ -9,6 +9,7 @@ import Foundation
 
 protocol RootContainerRouter: AnyObject {
     func showLoginScreen(with listener: LoginListener)
-    func showWalletTabBar()
-    func replaceLoginWithWallet()
+    func showWalletTabBar(with listener: WalletListListener)
+    func replaceLoginWithWallet(with listener: WalletListListener)
+    func replaceWalletWithLogin(with listener: LoginListener)
 }

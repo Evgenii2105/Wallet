@@ -8,11 +8,19 @@
 import UIKit
 import SnapKit
 
-protocol SortedHeaderViewListiner: AnyObject {
+protocol SortHeaderViewDelegate: AnyObject {
     func sortedHeader(by sort: CoinsListHeaderView.CoinsSorting)
 }
 
 final class CoinsListHeaderView: UITableViewHeaderFooterView {
+    
+    // MARK: Constants
+    
+    private enum Constants {
+        static let sixteenPadding: CGFloat = 16
+    }
+    
+    // MARK: Internal Properties
     
     enum CoinsSorting {
         case sortedDefault
@@ -21,10 +29,12 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
     }
     
     static let headerIdentifier = "CoinsListHeaderView"
-    weak var listiner: SortedHeaderViewListiner?
+    weak var delegate: SortHeaderViewDelegate?
+    
+    // MARK: Private Properties
+    
     private var currentSorted: CoinsSorting = .sortedDefault
 
-    
     private let titleLabel: UILabel = {
        let titleLabel = UILabel()
         titleLabel.text = "Trending"
@@ -41,6 +51,8 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
         return sortedButton
     }()
     
+    // MARK: Lifecycle
+    
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -52,25 +64,22 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: Func
+    
     private func setupUI() {
-        backgroundColor = UIColor(
-            red: 243 / 255,
-            green: 245 / 255,
-            blue: 246 / 255,
-            alpha: 1.0
-        )
+        backgroundColor = Colors.coinDetailViewBackground
         contentView.addSubview(titleLabel)
         contentView.addSubview(sortedButton)
     }
     
     private func setupConstraints() {
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
+            make.leading.equalToSuperview().offset(Constants.sixteenPadding)
             make.centerY.equalToSuperview()
         }
         
         sortedButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-16)
+            make.trailing.equalToSuperview().offset(-Constants.sixteenPadding)
             make.centerY.equalToSuperview()
         }
     }
@@ -84,11 +93,11 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
         sortedButton.showsMenuAsPrimaryAction = true
         
         let sortedDefault = UIAction(
-            title: "Сорировка по умолчанию",
+            title: "Сортировка по умолчанию",
             state: currentSorted == .sortedDefault ? .on : .off) { [weak self] _ in
                 self?.currentSorted = .sortedDefault
                 self?.tappedSortButton()
-                self?.listiner?.sortedHeader(by: .sortedDefault)
+                self?.delegate?.sortedHeader(by: .sortedDefault)
             }
         
         let sortDescending = UIAction(
@@ -96,7 +105,7 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
             state: currentSorted == .sortedDescending ? .on : .off) { [weak self] _ in
                 self?.currentSorted = .sortedDescending
                 self?.tappedSortButton()
-                self?.listiner?.sortedHeader(by: .sortedDescending)
+                self?.delegate?.sortedHeader(by: .sortedDescending)
             }
         
         let sortAscending = UIAction(
@@ -104,7 +113,7 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
             state: currentSorted == .sortedAscending ? .on : .off) { [weak self] _ in
                 self?.currentSorted = .sortedAscending
                 self?.tappedSortButton()
-                self?.listiner?.sortedHeader(by: .sortedAscending)
+                self?.delegate?.sortedHeader(by: .sortedAscending)
             }
         sortedButton.menu = UIMenu(title: "", children: [sortedDefault, sortDescending, sortAscending])
     }
