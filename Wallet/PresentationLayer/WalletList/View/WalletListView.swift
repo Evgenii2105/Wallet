@@ -8,5 +8,5 @@
 import Foundation
 
 protocol WalletListView: AnyObject {
-    func didCoins(coins: [WalletListItem])
+    func didGet(walletListItems: [WalletListItem])
 }

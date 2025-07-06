@@ -60,7 +60,7 @@ final class MainTabBarController: UITabBarController {
         
         switch index {
         case 0:
-            image = UIImage(systemName: "house")
+            image = controller.tabImage
         case 1:
             image = UIImage(systemName: "arrow.up.forward")
         case 2:

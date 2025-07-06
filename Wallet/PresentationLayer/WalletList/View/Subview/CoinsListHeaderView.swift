@@ -34,9 +34,9 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
     // MARK: Private Properties
     
     private var currentSorted: CoinsSorting = .sortedDefault
-
+    
     private let titleLabel: UILabel = {
-       let titleLabel = UILabel()
+        let titleLabel = UILabel()
         titleLabel.text = "Trending"
         titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         titleLabel.textColor = .black
@@ -44,7 +44,7 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
     }()
     
     private let sortedButton: UIButton = {
-       let sortedButton = UIButton()
+        let sortedButton = UIButton()
         let image = UIImage(systemName: "arrow.up.arrow.down")
         sortedButton.setImage(image, for: .normal)
         sortedButton.tintColor = .black
@@ -63,16 +63,19 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+// MARK: - Private Extension
+
+private extension CoinsListHeaderView {
     
-    // MARK: Func
-    
-    private func setupUI() {
+    func setupUI() {
         backgroundColor = Colors.coinDetailViewBackground
         contentView.addSubview(titleLabel)
         contentView.addSubview(sortedButton)
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(Constants.sixteenPadding)
             make.centerY.equalToSuperview()
@@ -84,12 +87,12 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
         }
     }
     
-    private func setupActions() {
+    func setupActions() {
         sortedButton.addTarget(self, action: #selector(tappedSortButton), for: .touchUpInside)
     }
     
     @objc
-    private func tappedSortButton() {
+    func tappedSortButton() {
         sortedButton.showsMenuAsPrimaryAction = true
         
         let sortedDefault = UIAction(

@@ -40,6 +40,6 @@ final class WalletListPresenterImpl: WalletListPresenter {
 
 extension WalletListPresenterImpl: WalletListPresenterOutput {
     func didGet(walletListItems: [WalletListItem]) {
-        view?.didCoins(coins: walletListItems)
+        view?.didGet(walletListItems: walletListItems)
     }
 }

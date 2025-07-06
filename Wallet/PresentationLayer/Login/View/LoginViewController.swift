@@ -118,12 +118,14 @@ final class LoginViewController: UIViewController {
         setupConstraints()
         textFieldDelegate()
         setupActions()
-        tapGesture()
+        setupDissmisKeyboardGesture()
     }
-    
-    // MARK: Func
-    
-    private func setupUI() {
+}
+
+// MARK: - Private Extension
+
+private extension LoginViewController {
+    func setupUI() {
         view.backgroundColor = Colors.loginBackground
         view.addSubview(containerImage)
         view.addSubview(userNameTextField)
@@ -131,11 +133,11 @@ final class LoginViewController: UIViewController {
         view.addSubview(loginButton)
     }
     
-    private func setupActions() {
+    func setupActions() {
         loginButton.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         containerImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(view.safeAreaLayoutGuide).offset(-20)
@@ -161,23 +163,23 @@ final class LoginViewController: UIViewController {
         }
     }
     
-    private func textFieldDelegate() {
+    func textFieldDelegate() {
         userNameTextField.delegate = self
         userPasswordTextField.delegate = self
     }
     
     @objc
-    private func handleLogin() {
+    func handleLogin() {
         presenter?.handleAuth(login: userNameTextField.text, password: userPasswordTextField.text)
     }
     
-    private func tapGesture() {
+    func setupDissmisKeyboardGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
     
     @objc
-    private func dismissKeyboard() {
+    func dismissKeyboard() {
         view.endEditing(true)
     }
 }
@@ -206,7 +208,7 @@ extension LoginViewController: UITextFieldDelegate {
 }
 
 //private extension LoginViewController {
-//    
+//
 //    func setupNotifications() {
 //        NotificationCenter.default.addObserver(self,
 //                                               selector: #selector(keyboardWillShow),
@@ -217,20 +219,20 @@ extension LoginViewController: UITextFieldDelegate {
 //                                               name: UIResponder.keyboardWillHideNotification,
 //                                               object: nil)
 //    }
-//    
+//
 //    @objc
 //    func keyboardWillShow(notification: NSNotification) {
 //        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
 //            return
 //        }
-//        
+//
 //        let keyboardHeight = keyboardSize.height
 //        var contentInset = scrollView.contentInset
 //        contentInset.bottom = keyboardHeight
 //        scrollView.contentInset = contentInset
 //        scrollView.scrollIndicatorInsets = scrollView.contentInset
 //    }
-//    
+//
 //    @objc
 //    func keyboardWillHide(notification: NSNotification) {
 //        scrollView.contentInset = UIEdgeInsets.zero

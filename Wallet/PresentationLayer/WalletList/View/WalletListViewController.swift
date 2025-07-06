@@ -130,10 +130,23 @@ final class WalletListViewController: UIViewController {
         showLoading()
         presenter?.setupDataSource()
     }
+}
+
+// MARK: - WalletListView
+
+extension WalletListViewController: WalletListView {
+    func didGet(walletListItems: [WalletListItem]) {
+        self.coins = walletListItems
+        hideLoading()
+        coinsTable.reloadData()
+    }
+}
+
+// MARK: - Private Extension
+
+private extension WalletListViewController {
     
-    // MARK: Func
-    
-    private func setupUI() {
+    func setupUI() {
         view.backgroundColor = .white
         view.addSubview(loadingStackView)
         view.addSubview(headerView)
@@ -145,23 +158,23 @@ final class WalletListViewController: UIViewController {
         view.addSubview(coinsTable)
     }
     
-    private func showLoading() {
+    func showLoading() {
         coinsTable.isHidden = true
         loadingStackView.isHidden = false
         loadingIndicator.startAnimating()
         loadingLabel.isHidden = false
     }
     
-    private func hideLoading() {
+    func hideLoading() {
         coinsTable.isHidden = false
         loadingStackView.isHidden = true
         loadingIndicator.stopAnimating()
         loadingLabel.isHidden = true
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         loadingStackView.snp.makeConstraints { make in
-           make.center.equalTo(coinsTable)
+            make.center.equalTo(coinsTable)
         }
         
         headerView.snp.makeConstraints { make in
@@ -199,7 +212,7 @@ final class WalletListViewController: UIViewController {
         }
     }
     
-    private func createCoinsTable() {
+    func createCoinsTable() {
         coinsTable.register(CoinsListHeaderView.self, forHeaderFooterViewReuseIdentifier: CoinsListHeaderView.headerIdentifier)
         coinsTable.register(CoinsListCell.self, forCellReuseIdentifier: CoinsListCell.cellIdentifier)
         coinsTable.dataSource = self
@@ -208,15 +221,6 @@ final class WalletListViewController: UIViewController {
     }
 }
 
-// MARK: - WalletListView
-
-extension WalletListViewController: WalletListView {
-    func didCoins(coins: [WalletListItem]) {
-        self.coins = coins
-        hideLoading()
-        coinsTable.reloadData()
-    }
-}
 
 // MARK: - UITableViewDelegate && UITableViewDataSource
 
@@ -251,7 +255,9 @@ extension WalletListViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension WalletListViewController: TabBarConfiguration {
     
-    var tabImage: UIImage? { nil }
+    var tabImage: UIImage? {
+        UIImage(systemName: "house")
+    }
 }
 
 // MARK: - SortHeaderViewDelegate

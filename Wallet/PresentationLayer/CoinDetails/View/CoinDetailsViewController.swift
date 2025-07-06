@@ -164,9 +164,18 @@ final class CoinDetailsViewController: UIViewController {
         presenter?.setupDataSource()
     }
     
-    // MARK: Func
+    // MARK: Actions
     
-    private func setupUI() {
+    func setSelectedPeriod(_ period: TimePeriod) {
+        timePeriodControl.selectedSegmentIndex = period.segmentIndex
+    }
+}
+
+// MARK: - Private Extension
+
+private extension CoinDetailsViewController {
+    
+    func setupUI() {
         view.backgroundColor = Colors.coinDetailViewBackground
         view.addSubview(priceLabel)
         view.addSubview(changePrice)
@@ -181,13 +190,13 @@ final class CoinDetailsViewController: UIViewController {
         statsStackView.addArrangedSubview(capitalizationRow)
         
         supplyRow.addArrangedSubview(circulatingSuply)
-        supplyRow.addArrangedSubview(circulatingSuply)
+        supplyRow.addArrangedSubview(suplyLabel)
         statsStackView.addArrangedSubview(supplyRow)
         
         setupNavigationBar()
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         priceLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.sixteenPadding)
             make.centerX.equalToSuperview()
@@ -222,7 +231,7 @@ final class CoinDetailsViewController: UIViewController {
         circulatingSuply.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
     
-    private func setupNavigationBar() {
+    func setupNavigationBar() {
         let backButton = UIButton(type: .system)
         let image = UIImage(systemName: "arrow.backward.circle")
         backButton.setImage(image, for: .normal)
@@ -239,26 +248,22 @@ final class CoinDetailsViewController: UIViewController {
     }
     
     @objc
-    private func backButtonTapped() {
+    func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
     
-    func setSelectedPeriod(_ period: TimePeriod) {
-        timePeriodControl.selectedSegmentIndex = period.segmentIndex
-    }
-    
     @objc
-    private func timePeriodChanged() {
+    func timePeriodChanged() {
         guard let period = TimePeriod(index: timePeriodControl.selectedSegmentIndex) else { return }
         presenter?.timePeriodChanged(to: period)
     }
     
-    private func formatPrice(_ price: Double) -> NSAttributedString {
+    func formatPrice(_ price: Double) -> NSAttributedString {
         let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
-        return NSAttributedString(string: formattedPrice)
+        return NSAttributedString(string: "$ \(formattedPrice)")
     }
     
-    private func formatChangePrice(_ price: Double) -> NSAttributedString {
+    func formatChangePrice(_ price: Double) -> NSAttributedString {
         let attachment = NSTextAttachment()
         if price > 0.0 {
             attachment.image = UIImage(systemName: "chevron.compact.up")?.withTintColor(.green)
@@ -268,17 +273,17 @@ final class CoinDetailsViewController: UIViewController {
         
         let attributedString = NSMutableAttributedString(attachment: attachment)
         let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
-        attributedString.append(NSAttributedString(string: formattedPrice))
+        attributedString.append(NSAttributedString(string: "\(formattedPrice) %"))
         
         return attributedString
     }
     
-    private func configure(coinDetails: CoinData, period: TimePeriod) {
+    func configure(coinDetails: CoinData, period: TimePeriod) {
         navigationItem.title = coinDetails.name
         priceLabel.attributedText = formatPrice(coinDetails.metrics.marketData.priceUSD)
         switch period {
         case .day:
-            changePrice.attributedText = formatChangePrice(coinDetails.metrics.marketData.percentChangeUSDLast24Hours)
+            changePrice.attributedText =  formatChangePrice(coinDetails.metrics.marketData.percentChangeUSDLast24Hours)
         case .week:
             changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneWeek)
         case .year:
@@ -288,7 +293,8 @@ final class CoinDetailsViewController: UIViewController {
         case .point:
             changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneYear ?? 0.0)
         }
-        capitalPriceLabel.text = "0000"
+        capitalPriceLabel.text = "$ 231.233"
+        suplyLabel.text = "114.211 ETH"
     }
 }
 

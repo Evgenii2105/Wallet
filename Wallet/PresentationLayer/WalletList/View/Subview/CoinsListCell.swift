@@ -32,7 +32,7 @@ final class CoinsListCell: UITableViewCell {
             blue: 199 / 255,
             alpha: 1
         )
-            
+        
         return imageCoins
     }()
     
@@ -84,9 +84,33 @@ final class CoinsListCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Func
+    // MARK: Actions
     
-    private func setupUI() {
+    func configure(with coin: WalletListItem) {
+        nameLabel.text = coin.name
+        priceLabel.text = formatPrice(coin.price)
+        imageCoins.image = coin.image
+        shortNameLabel.text = coin.symbol
+        let changeText = formatPrice(coin.changePrice)
+        let attachment = NSTextAttachment()
+        
+        if coin.changePrice > 0 {
+            attachment.image = UIImage(systemName: "chevron.compact.up")?.withTintColor(.green)
+        } else {
+            attachment.image = UIImage(systemName: "chevron.compact.down")?.withTintColor(.red)
+        }
+        
+        let attributedString = NSMutableAttributedString(attachment: attachment)
+        attributedString.append(NSAttributedString(string: "  \(changeText)"))
+        changeLabel.attributedText = attributedString
+    }
+}
+
+// MARK: - Private Extension
+
+private extension CoinsListCell {
+    
+    func setupUI() {
         contentView.backgroundColor = Colors.coinCellBackground
         contentView.addSubview(imageCoins)
         contentView.addSubview(nameLabel)
@@ -95,7 +119,7 @@ final class CoinsListCell: UITableViewCell {
         contentView.addSubview(changeLabel)
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(Constants.twelvePadding)
             make.leading.equalTo(imageCoins.snp.trailing).offset(Constants.twelvePadding)
@@ -125,7 +149,7 @@ final class CoinsListCell: UITableViewCell {
         }
     }
     
-    private func formatPrice(_ price: Double) -> String {
+    func formatPrice(_ price: Double) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.groupingSeparator = "."
@@ -134,24 +158,5 @@ final class CoinsListCell: UITableViewCell {
         formatter.minimumFractionDigits = 2
         
         return formatter.string(from: NSNumber(value: price)) ?? "\(price)"
-    }
-    
-    func configure(with coin: WalletListItem) {
-        nameLabel.text = coin.name
-        priceLabel.text = formatPrice(coin.price)
-        imageCoins.image = coin.image
-        shortNameLabel.text = coin.symbol
-        let changeText = formatPrice(coin.changePrice)
-        let attachment = NSTextAttachment()
-        
-        if coin.changePrice > 0 {
-            attachment.image = UIImage(systemName: "chevron.compact.up")?.withTintColor(.green)
-        } else {
-            attachment.image = UIImage(systemName: "chevron.compact.down")?.withTintColor(.red)
-        }
-        
-        let attributedString = NSMutableAttributedString(attachment: attachment)
-        attributedString.append(NSAttributedString(string: "  \(changeText)"))
-        changeLabel.attributedText = attributedString
     }
 }
