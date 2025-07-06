@@ -12,6 +12,11 @@ final class RootContainerRouterImpl: RootContainerRouter {
     weak var viewController: UIViewController?
     private weak var loginViewController: UIViewController?
     private weak var tabBarController: UIViewController?
+    private let userStorage: UserStorage
+    
+    init(userStorage: UserStorage) {
+        self.userStorage = userStorage
+    }
     
     func showLoginScreen(with listener: LoginListener) {
         let loginViewController = LoginModuleBuilder.build(with: listener)
@@ -20,7 +25,10 @@ final class RootContainerRouterImpl: RootContainerRouter {
     }
     
     func showWalletTabBar(with listener: WalletListListener) {
-        let walletTabBarController = MainTabBarController(walletListListener: listener)
+        let walletTabBarController = MainTabBarController(
+            userStorage: userStorage,
+            walletListListener: listener
+        )
         self.tabBarController = walletTabBarController
         viewController?.addChildViewController(walletTabBarController)
     }

@@ -16,10 +16,12 @@ final class MainTabBarController: UITabBarController {
     // MARK: Private Internal
     
     private weak var walletListListener: WalletListListener?
+    private let userStorage: UserStorage
     
     // MARK: Lifecycle
     
-    init(walletListListener: WalletListListener?) {
+    init(userStorage: UserStorage, walletListListener: WalletListListener?) {
+        self.userStorage = userStorage
         self.walletListListener = walletListListener
         super.init(nibName: nil, bundle: nil)
     }
@@ -36,7 +38,10 @@ final class MainTabBarController: UITabBarController {
     // MARK: Func
     
     private func setupTabs() {
-        let walletList = WalletListBuilder.build(listener: walletListListener)
+        let walletList = WalletListBuilder.build(
+            userStorage: userStorage,
+            listener: walletListListener
+        )
         let walletNavigation = UINavigationController(rootViewController: walletList)
         walletNavigation.tabBarItem = createTabItem(for: walletList, index: 0)
         

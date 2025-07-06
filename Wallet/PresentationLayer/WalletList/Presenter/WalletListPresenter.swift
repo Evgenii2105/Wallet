@@ -5,16 +5,18 @@
 //  Created by Евгений Фомичев on 02.07.2025.
 //
 
-import Foundation
+import UIKit
 
 protocol WalletListPresenter: AnyObject {
     func setupDataSource()
     func didLogout()
     func refreshTable()
-    func sortedHeader(by sort: CoinsListHeaderView.CoinsSorting)
+    func sortedHeader(by sort: WalletListInteractorImpl.CoinsSorting)
     func showDetailsCoin(coin: WalletListItem)
+    func getHeaderMenu() -> UIMenu
 }
 
 protocol WalletListPresenterOutput: AnyObject {
     func didGet(walletListItems: [WalletListItem])
+    func reconfigureMenu()
 }

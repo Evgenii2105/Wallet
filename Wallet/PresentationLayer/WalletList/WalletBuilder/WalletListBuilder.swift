@@ -9,10 +9,11 @@ import UIKit
 
 final class WalletListBuilder {
     
-    static func build(listener: WalletListListener?) -> WalletListViewController {
+    static func build(userStorage: UserStorage, listener: WalletListListener?) -> WalletListViewController {
         let view = WalletListViewController()
         let router = WalletListRouterImpl()
         let interactor = WalletListInteractorImpl(
+            userStorage: userStorage,
             router: router,
             listener: listener
         )

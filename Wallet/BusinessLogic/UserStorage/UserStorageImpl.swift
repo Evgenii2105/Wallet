@@ -9,6 +9,7 @@ import Foundation
 
 protocol UserStorage: AnyObject {
     var isUserLoggedIn: Bool { get }
+    func logout()
 }
 
 final class UserStorageImpl: UserStorage {

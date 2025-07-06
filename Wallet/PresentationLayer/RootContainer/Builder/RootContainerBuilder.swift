@@ -9,9 +9,9 @@ import UIKit
 
 final class RootContainerBuilder {
     
-    static func build(state: RootContainerPresenterImpl.State) -> UIViewController {
+    static func build(userStorage: UserStorage, state: RootContainerPresenterImpl.State) -> UIViewController {
         let view = RootContainerViewController()
-        let router = RootContainerRouterImpl()
+        let router = RootContainerRouterImpl(userStorage: userStorage)
         let presenter = RootContainerPresenterImpl(
             state: state,
             view: view,

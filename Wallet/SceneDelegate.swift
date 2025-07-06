@@ -16,10 +16,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         
-        UserDefaults.standard.removeObject(forKey: "isUserLoggedIn")
-        UserDefaults.standard.synchronize()
         let state: RootContainerPresenterImpl.State = UserStorageImpl.sharedInstance.isUserLoggedIn ? .loggedIn : .loggedOut
-        window?.rootViewController = RootContainerBuilder.build(state: state)
+        window?.rootViewController = RootContainerBuilder.build(
+            userStorage: UserStorageImpl.sharedInstance,
+            state: state
+        )
         
         window?.makeKeyAndVisible()
     }

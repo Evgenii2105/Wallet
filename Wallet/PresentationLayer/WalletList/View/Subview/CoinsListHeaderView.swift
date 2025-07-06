@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 protocol SortHeaderViewDelegate: AnyObject {
-    func sortedHeader(by sort: CoinsListHeaderView.CoinsSorting)
+    func sortedHeader(by sort: WalletListInteractorImpl.CoinsSorting)
 }
 
 final class CoinsListHeaderView: UITableViewHeaderFooterView {
@@ -21,19 +21,11 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
     }
     
     // MARK: Internal Properties
-    
-    enum CoinsSorting {
-        case sortedDefault
-        case sortedDescending
-        case sortedAscending
-    }
-    
+
     static let headerIdentifier = "CoinsListHeaderView"
     weak var delegate: SortHeaderViewDelegate?
     
     // MARK: Private Properties
-    
-    private var currentSorted: CoinsSorting = .sortedDefault
     
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
@@ -43,12 +35,13 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
         return titleLabel
     }()
     
-    private let sortedButton: UIButton = {
-        let sortedButton = UIButton()
+    private let sortButton: UIButton = {
+        let sortButton = UIButton()
         let image = UIImage(systemName: "arrow.up.arrow.down")
-        sortedButton.setImage(image, for: .normal)
-        sortedButton.tintColor = .black
-        return sortedButton
+        sortButton.setImage(image, for: .normal)
+        sortButton.tintColor = .black
+        sortButton.showsMenuAsPrimaryAction = true
+        return sortButton
     }()
     
     // MARK: Lifecycle
@@ -57,11 +50,16 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
         super.init(reuseIdentifier: reuseIdentifier)
         setupUI()
         setupConstraints()
-        setupActions()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: Actions
+    
+    func configure(with menu: UIMenu) {
+        sortButton.menu = menu
     }
 }
 
@@ -72,7 +70,7 @@ private extension CoinsListHeaderView {
     func setupUI() {
         backgroundColor = Colors.coinDetailViewBackground
         contentView.addSubview(titleLabel)
-        contentView.addSubview(sortedButton)
+        contentView.addSubview(sortButton)
     }
     
     func setupConstraints() {
@@ -81,43 +79,9 @@ private extension CoinsListHeaderView {
             make.centerY.equalToSuperview()
         }
         
-        sortedButton.snp.makeConstraints { make in
+        sortButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-Constants.sixteenPadding)
             make.centerY.equalToSuperview()
         }
-    }
-    
-    func setupActions() {
-        sortedButton.addTarget(self, action: #selector(tappedSortButton), for: .touchUpInside)
-    }
-    
-    @objc
-    func tappedSortButton() {
-        sortedButton.showsMenuAsPrimaryAction = true
-        
-        let sortedDefault = UIAction(
-            title: "Сортировка по умолчанию",
-            state: currentSorted == .sortedDefault ? .on : .off) { [weak self] _ in
-                self?.currentSorted = .sortedDefault
-                self?.tappedSortButton()
-                self?.delegate?.sortedHeader(by: .sortedDefault)
-            }
-        
-        let sortDescending = UIAction(
-            title: "Сортировка по убыванию стоимости",
-            state: currentSorted == .sortedDescending ? .on : .off) { [weak self] _ in
-                self?.currentSorted = .sortedDescending
-                self?.tappedSortButton()
-                self?.delegate?.sortedHeader(by: .sortedDescending)
-            }
-        
-        let sortAscending = UIAction(
-            title: "Сортировка по возрастанию стоимости",
-            state: currentSorted == .sortedAscending ? .on : .off) { [weak self] _ in
-                self?.currentSorted = .sortedAscending
-                self?.tappedSortButton()
-                self?.delegate?.sortedHeader(by: .sortedAscending)
-            }
-        sortedButton.menu = UIMenu(title: "", children: [sortedDefault, sortDescending, sortAscending])
     }
 }

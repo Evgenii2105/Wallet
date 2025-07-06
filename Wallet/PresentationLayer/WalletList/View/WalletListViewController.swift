@@ -135,10 +135,21 @@ final class WalletListViewController: UIViewController {
 // MARK: - WalletListView
 
 extension WalletListViewController: WalletListView {
+    
     func didGet(walletListItems: [WalletListItem]) {
         self.coins = walletListItems
         hideLoading()
         coinsTable.reloadData()
+    }
+    
+    func reconfigureHeader() {
+        guard let header = coinsTable.headerView(forSection: 0) as? CoinsListHeaderView,
+        let menu = presenter?.getHeaderMenu()
+        else {
+            return
+        }
+        header.configure(with: menu)
+        header.delegate = self
     }
 }
 
@@ -245,8 +256,13 @@ extension WalletListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: CoinsListHeaderView.headerIdentifier) as? CoinsListHeaderView else { return nil }
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: CoinsListHeaderView.headerIdentifier) as? CoinsListHeaderView,
+              let menu = presenter?.getHeaderMenu()
+        else {
+            return nil
+        }
         header.delegate = self
+        header.configure(with: menu)
         return header
     }
 }
@@ -263,7 +279,7 @@ extension WalletListViewController: TabBarConfiguration {
 // MARK: - SortHeaderViewDelegate
 
 extension WalletListViewController: SortHeaderViewDelegate {
-    func sortedHeader(by sort: CoinsListHeaderView.CoinsSorting) {
+    func sortedHeader(by sort: WalletListInteractorImpl.CoinsSorting) {
         presenter?.sortedHeader(by: sort)
     }
 }
