@@ -76,6 +76,7 @@ final class LoginViewController: UIViewController {
             attributes: [.foregroundColor: UIColor.lightGray]
         )
         userPasswordTextField.layer.cornerRadius = Constants.layerRadius
+        userPasswordTextField.isSecureTextEntry = true
         userPasswordTextField.backgroundColor = Constants.backgroundColorTextField
         
         let passwordImage = UIImageView(image: UIImage(named: "passwordcoin") )
