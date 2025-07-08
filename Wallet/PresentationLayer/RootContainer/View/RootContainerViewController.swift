@@ -18,5 +18,4 @@ final class RootContainerViewController: UIViewController {
 }
 
 extension RootContainerViewController: RootContainerView {
-    
 }

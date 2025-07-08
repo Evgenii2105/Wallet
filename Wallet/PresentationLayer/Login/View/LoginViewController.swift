@@ -31,6 +31,17 @@ final class LoginViewController: UIViewController {
     
     // MARK: Private Properties
     
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.isScrollEnabled = true
+        return scrollView
+    }()
+    
+    private let containerView: UIView = {
+        let containerView = UIView()
+        return containerView
+    }()
+    
     private let containerImage: UIImageView = {
         let containerImage = UIImageView()
         containerImage.image = UIImage(named: "LoginIcon")
@@ -120,6 +131,7 @@ final class LoginViewController: UIViewController {
         textFieldDelegate()
         setupActions()
         setupDissmisKeyboardGesture()
+        setupNotifications()
     }
 }
 
@@ -128,10 +140,12 @@ final class LoginViewController: UIViewController {
 private extension LoginViewController {
     func setupUI() {
         view.backgroundColor = Colors.loginBackground
-        view.addSubview(containerImage)
-        view.addSubview(userNameTextField)
-        view.addSubview(userPasswordTextField)
-        view.addSubview(loginButton)
+        view.addSubview(scrollView)
+        scrollView.addSubview(containerView)
+        containerView.addSubview(containerImage)
+        containerView.addSubview(userNameTextField)
+        containerView.addSubview(userPasswordTextField)
+        containerView.addSubview(loginButton)
     }
     
     func setupActions() {
@@ -139,9 +153,18 @@ private extension LoginViewController {
     }
     
     func setupConstraints() {
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        containerView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalTo(scrollView.snp.width)
+        }
+        
         containerImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(-20)
+            make.top.equalTo(containerView.snp.top).offset(60)
             make.width.height.equalTo(280)
         }
         
@@ -161,6 +184,7 @@ private extension LoginViewController {
             make.top.equalTo(userPasswordTextField.snp.bottom).offset(40)
             make.leading.trailing.equalToSuperview().inset(Constants.horizontalPadding)
             make.height.equalTo(Constants.textFieldHeight)
+            make.bottom.equalTo(containerView.snp.bottom).offset(-40)
         }
     }
     
@@ -182,6 +206,36 @@ private extension LoginViewController {
     @objc
     func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    func setupNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    
+    @objc
+    func keyboardWillShow(notification: NSNotification) {
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        
+        let keyboardHeight = keyboardSize.height
+        var contentInset = scrollView.contentInset
+        contentInset.bottom = keyboardHeight
+        scrollView.contentInset = contentInset
+        scrollView.scrollIndicatorInsets = scrollView.contentInset
+    }
+    
+    @objc
+    func keyboardWillHide(notification: NSNotification) {
+        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
     }
 }
 
@@ -207,36 +261,3 @@ extension LoginViewController: UITextFieldDelegate {
         return true
     }
 }
-
-//private extension LoginViewController {
-//
-//    func setupNotifications() {
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(keyboardWillShow),
-//                                               name: UIResponder.keyboardWillShowNotification,
-//                                               object: nil)
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(keyboardWillHide),
-//                                               name: UIResponder.keyboardWillHideNotification,
-//                                               object: nil)
-//    }
-//
-//    @objc
-//    func keyboardWillShow(notification: NSNotification) {
-//        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
-//            return
-//        }
-//
-//        let keyboardHeight = keyboardSize.height
-//        var contentInset = scrollView.contentInset
-//        contentInset.bottom = keyboardHeight
-//        scrollView.contentInset = contentInset
-//        scrollView.scrollIndicatorInsets = scrollView.contentInset
-//    }
-//
-//    @objc
-//    func keyboardWillHide(notification: NSNotification) {
-//        scrollView.contentInset = UIEdgeInsets.zero
-//        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
-//    }
-//}
