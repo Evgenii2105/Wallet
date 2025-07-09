@@ -26,19 +26,22 @@ final class CoinsListCell: UITableViewCell {
     private let imageCoins: UIImageView = {
         let imageCoins = UIImageView()
         imageCoins.image = UIImage(systemName: "photo")
-        imageCoins.tintColor = UIColor(
-            red: 251 / 255,
-            green: 229 / 255,
-            blue: 199 / 255,
-            alpha: 1
-        )
-        
         return imageCoins
+    }()
+    
+    private static let formatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.groupingSeparator = "."
+        formatter.decimalSeparator = "."
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+        return formatter
     }()
     
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
-        nameLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        nameLabel.font = Fonts.nameLabelCell
         nameLabel.numberOfLines = 0
         nameLabel.textAlignment = .left
         nameLabel.textColor = .black
@@ -47,8 +50,8 @@ final class CoinsListCell: UITableViewCell {
     
     private let shortNameLabel: UILabel = {
         let shortName = UILabel()
-        shortName.textColor = .lightGray
-        shortName.font = .systemFont(ofSize: 18, weight: .light)
+        shortName.textColor = .gray
+        shortName.font = Fonts.shortNameLabelFont
         shortName.textAlignment = .left
         shortName.numberOfLines = 0
         return shortName
@@ -59,14 +62,14 @@ final class CoinsListCell: UITableViewCell {
         priceLabel.numberOfLines = 1
         priceLabel.textColor = .black
         priceLabel.textAlignment = .right
-        priceLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        priceLabel.font = Fonts.priceLabelCell
         return priceLabel
     }()
     
     private let changeLabel: UILabel = {
         let changeLabel = UILabel()
-        changeLabel.font = .systemFont(ofSize: 18, weight: .light)
-        changeLabel.textColor = .lightGray
+        changeLabel.font = Fonts.changePriceLabelFont
+        changeLabel.textColor = .gray
         changeLabel.numberOfLines = 1
         changeLabel.textAlignment = .right
         return changeLabel
@@ -88,21 +91,10 @@ final class CoinsListCell: UITableViewCell {
     
     func configure(with coin: WalletListItem) {
         nameLabel.text = coin.name
-        priceLabel.text = formatPrice(coin.price)
         imageCoins.image = coin.image
+        priceLabel.attributedText = formatPrice(coin.price)
         shortNameLabel.text = coin.symbol
-        let changeText = formatPrice(coin.changePrice)
-        let attachment = NSTextAttachment()
-        
-        if coin.changePrice > 0 {
-            attachment.image = UIImage(systemName: "chevron.compact.up")?.withTintColor(.green)
-        } else {
-            attachment.image = UIImage(systemName: "chevron.compact.down")?.withTintColor(.red)
-        }
-        
-        let attributedString = NSMutableAttributedString(attachment: attachment)
-        attributedString.append(NSAttributedString(string: "  \(changeText)"))
-        changeLabel.attributedText = attributedString
+        changeLabel.attributedText = formatChangePrice(coin.changePrice)
     }
 }
 
@@ -149,14 +141,29 @@ private extension CoinsListCell {
         }
     }
     
-    func formatPrice(_ price: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.groupingSeparator = "."
-        formatter.decimalSeparator = "."
-        formatter.maximumFractionDigits = 2
-        formatter.minimumFractionDigits = 2
+    func formatPrice(_ price: Double) -> NSAttributedString {
+        let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
+        return NSAttributedString(string: "$\(formattedPrice)")
+    }
+    
+    func formatChangePrice(_ price: Double) -> NSAttributedString {
+        let attachment = NSTextAttachment()
+        if price > 0.0 {
+            attachment.image = UIImage(systemName: "chevron.compact.up")?.withTintColor(.green)
+        } else {
+            attachment.image = UIImage(systemName: "chevron.compact.down")?.withTintColor(.red)
+        }
+        attachment.bounds = CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: 12,
+                height: 12
+            )
+        )
+        let attributedString = NSMutableAttributedString(attachment: attachment)
+        let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
+        attributedString.append(NSAttributedString(string: " \(formattedPrice)%"))
         
-        return formatter.string(from: NSNumber(value: price)) ?? "\(price)"
+        return attributedString
     }
 }

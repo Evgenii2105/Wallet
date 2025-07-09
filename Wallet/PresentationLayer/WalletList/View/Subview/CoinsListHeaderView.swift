@@ -30,7 +30,7 @@ final class CoinsListHeaderView: UITableViewHeaderFooterView {
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.text = "Trending"
-        titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
+        titleLabel.font = Fonts.headerLabelWalletScreen
         titleLabel.textColor = .black
         return titleLabel
     }()

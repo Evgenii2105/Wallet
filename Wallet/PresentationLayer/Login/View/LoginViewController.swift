@@ -117,6 +117,7 @@ final class LoginViewController: UIViewController {
         let loginButton = UIButton()
         loginButton.setTitle("Login", for: .normal)
         loginButton.tintColor = .white
+        loginButton.titleLabel?.font = Fonts.loginButtonFont
         loginButton.backgroundColor = Colors.loginButtonBackground
         loginButton.layer.cornerRadius = Constants.layerRadius
         return loginButton

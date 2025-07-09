@@ -42,6 +42,7 @@ final class MainTabBarController: UITabBarController {
             userStorage: userStorage,
             listener: walletListListener
         )
+        tabBar.tintColor = .black
         let walletNavigation = UINavigationController(rootViewController: walletList)
         walletNavigation.tabBarItem = createTabItem(for: walletList, index: 0)
         

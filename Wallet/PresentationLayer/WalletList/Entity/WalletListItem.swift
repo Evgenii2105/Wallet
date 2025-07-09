@@ -26,7 +26,7 @@ extension CoinData {
             name: self.name,
             price: self.metrics.marketData.priceUSD,
             changePrice: self.metrics.marketData.percentChangeUSDLast24Hours,
-            image: nil
+            image: CoinImage(rawValue: self.symbol)?.image
         )
     }
 }

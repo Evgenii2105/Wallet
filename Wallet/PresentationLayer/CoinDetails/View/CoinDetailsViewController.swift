@@ -19,9 +19,9 @@ final class CoinDetailsViewController: UIViewController {
     // MARK: Internal Properties
     
     enum TimePeriod: String, CaseIterable {
-        case day = "Day"
-        case week = "Week"
-        case year = "Year"
+        case day = "24H"
+        case week = "1W"
+        case year = "1Y"
         case all = "All"
         case point = "Point"
         
@@ -64,21 +64,36 @@ final class CoinDetailsViewController: UIViewController {
     private let priceLabel: UILabel = {
         let priceLabel = UILabel()
         priceLabel.textColor = .black
-        priceLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        priceLabel.font = Fonts.priceCoinDetailsFont
         return priceLabel
     }()
     
     private let changePrice: UILabel = {
         let changePrice = UILabel()
-        changePrice.font = .systemFont(ofSize: 16, weight: .light)
+        changePrice.font = Fonts.changeCoinDetailsFont
         changePrice.textColor = .lightGray
         return changePrice
     }()
     
-    private lazy var timePeriodControl: UISegmentedControl = {
+    private lazy var timePeriodControl: CoinDetailsSegmentControl = {
         let items = TimePeriod.allCases.map { $0.rawValue }
-        let changeTime = UISegmentedControl(items: items)
-        changeTime.selectedSegmentTintColor = .lightGray
+        let changeTime = CoinDetailsSegmentControl(items: items)
+        changeTime.backgroundColor = Colors.segmentedControlBackgronud
+        changeTime.selectedSegmentTintColor = Colors.segmentedControlSelectedBackground
+        changeTime.setDividerImage(
+            UIImage(),
+            forLeftSegmentState: .normal,
+            rightSegmentState: .normal,
+            barMetrics: .default
+        )
+        changeTime.setTitleTextAttributes(
+            [.foregroundColor: UIColor.black, .font: Fonts.segmentedControlFont],
+            for: .selected
+        )
+        changeTime.setTitleTextAttributes(
+            [.foregroundColor: UIColor.gray, .font: Fonts.segmentedControlFont],
+            for: .normal
+        )
         changeTime.selectedSegmentIndex = 0
         changeTime.addTarget(self, action: #selector(timePeriodChanged), for: .valueChanged)
         return changeTime
@@ -96,13 +111,13 @@ final class CoinDetailsViewController: UIViewController {
         marketLabel.text = "Market Statistic"
         marketLabel.textColor = .black
         marketLabel.numberOfLines = 1
-        marketLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        marketLabel.font = Fonts.marketLabelFont
         return marketLabel
     }()
     
     private let capitalizationLabel: UILabel = {
         let capitalizationLabel = UILabel()
-        capitalizationLabel.font = .systemFont(ofSize: 18, weight: .light)
+        capitalizationLabel.font = Fonts.capitalizationLabelFont
         capitalizationLabel.textColor = .lightGray
         capitalizationLabel.text = "Market capitalization"
         return capitalizationLabel
@@ -111,7 +126,7 @@ final class CoinDetailsViewController: UIViewController {
     private let circulatingSuply: UILabel = {
         let suply = UILabel()
         suply.text = "Circulating Suply"
-        suply.font = .systemFont(ofSize: 18, weight: .light)
+        suply.font = Fonts.circulatingSuplyFont
         suply.textColor = .lightGray
         return suply
     }()
@@ -120,14 +135,14 @@ final class CoinDetailsViewController: UIViewController {
         let capitalPriceLabel = UILabel()
         capitalPriceLabel.text = "123.231"
         capitalPriceLabel.textColor = .black
-        capitalPriceLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        capitalPriceLabel.font = Fonts.capitalPriceLabelFont
         capitalPriceLabel.textAlignment = .right
         return capitalPriceLabel
     }()
     
     private let suplyLabel: UILabel = {
         let suplyLabel = UILabel()
-        suplyLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        suplyLabel.font = Fonts.suplyLabelFont
         suplyLabel.textColor = .black
         suplyLabel.text = "111.22BTC"
         suplyLabel.textAlignment = .right
@@ -162,6 +177,7 @@ final class CoinDetailsViewController: UIViewController {
         setupUI()
         setupConstraints()
         presenter?.setupDataSource()
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     // MARK: Actions
@@ -210,7 +226,7 @@ private extension CoinDetailsViewController {
         timePeriodControl.snp.makeConstraints { make in
             make.top.equalTo(changePrice.snp.bottom).offset(Constants.sixteenPadding)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(32)
+            make.height.equalTo(56)
         }
         
         containerView.snp.makeConstraints { make in
@@ -245,6 +261,7 @@ private extension CoinDetailsViewController {
         self.navigationItem.leftBarButtonItem = backBarItem
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.largeTitleDisplayMode = .never
+        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     @objc
@@ -260,7 +277,7 @@ private extension CoinDetailsViewController {
     
     func formatPrice(_ price: Double) -> NSAttributedString {
         let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
-        return NSAttributedString(string: "$ \(formattedPrice)")
+        return NSAttributedString(string: "$\(formattedPrice)")
     }
     
     func formatChangePrice(_ price: Double) -> NSAttributedString {
@@ -271,9 +288,16 @@ private extension CoinDetailsViewController {
             attachment.image = UIImage(systemName: "chevron.compact.down")?.withTintColor(.red)
         }
         
+        attachment.bounds = CGRect(
+            origin: .zero,
+            size: CGSize(
+                width: 12,
+                height: 12
+            )
+        )
         let attributedString = NSMutableAttributedString(attachment: attachment)
         let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
-        attributedString.append(NSAttributedString(string: "\(formattedPrice) %"))
+        attributedString.append(NSAttributedString(string: " \(formattedPrice)%"))
         
         return attributedString
     }
@@ -293,7 +317,7 @@ private extension CoinDetailsViewController {
         case .point:
             changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneYear ?? 0.0)
         }
-        capitalPriceLabel.text = "$ 231.233"
+        capitalPriceLabel.text = "$231.233"
         suplyLabel.text = "114.211 ETH"
     }
 }
@@ -305,4 +329,11 @@ extension CoinDetailsViewController: CoinDetailsView {
     func didGet(coin: CoinData, period: TimePeriod) {
         configure(coinDetails: coin, period: period)
     }
+}
+
+extension CoinDetailsViewController: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+           return true
+       }
 }

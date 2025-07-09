@@ -67,7 +67,7 @@ final class WalletListViewController: UIViewController {
     private let homeLabel: UILabel = {
         let homeLabel = UILabel()
         homeLabel.text = "Home"
-        homeLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        homeLabel.font = Fonts.homeWalletScreenFont
         homeLabel.textColor = .white
         return homeLabel
     }()
@@ -79,6 +79,7 @@ final class WalletListViewController: UIViewController {
                 image: UIImage(systemName: "airplane"),
                 handler: { [weak self] _ in
                     self?.presenter?.refreshTable()
+                    self?.showLoading()
                 }
             ),
             UIAction(
@@ -101,7 +102,7 @@ final class WalletListViewController: UIViewController {
         let programLabel = UILabel()
         programLabel.text = "Affilate program"
         programLabel.textColor = .white
-        programLabel.font = .systemFont(ofSize: 22, weight: .light)
+        programLabel.font = Fonts.affiliateLabelWalletScreenFont
         return programLabel
     }()
     
@@ -109,8 +110,9 @@ final class WalletListViewController: UIViewController {
         let moreButton = UIButton()
         moreButton.setTitle("Learn more", for: .normal)
         moreButton.setTitleColor(.black, for: .normal)
+        moreButton.titleLabel?.font = Fonts.learnMoreWalletScreen
         moreButton.backgroundColor = .white
-        moreButton.layer.cornerRadius = Constants.cornerRadius
+        moreButton.layer.cornerRadius = 18
         return moreButton
     }()
     
@@ -207,7 +209,7 @@ private extension WalletListViewController {
         learnMoreButton.snp.makeConstraints { make in
             make.top.equalTo(affiliateLabel.snp.bottom).offset(Constants.leadingPadding)
             make.leading.equalToSuperview().offset(Constants.leadingPadding)
-            make.width.equalTo(120)
+            make.width.equalTo(140)
         }
         
         boxImage.snp.makeConstraints { make in
