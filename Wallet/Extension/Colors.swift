@@ -15,6 +15,6 @@ enum Colors {
     static let coinDetailViewBackground = UIColor(hexString: "#F7F7FA")!
     static let coinCellBackground = UIColor(hexString: "F3F5F6")!
     static let segmentedControlSelectedBackground = UIColor(hexString: "#FFFFFF", transparency: 0.8)!
-    static let segmentedControlBackgronud = UIColor(hexString: "EBEFF1")!
+    static let segmentedControlBackground = UIColor(hexString: "EBEFF1")!
     static let segmentedControlSelectedShadow = UIColor(hexString: "#373E7D", transparency: 0.1)!
 }

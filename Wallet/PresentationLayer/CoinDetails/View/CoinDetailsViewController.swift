@@ -78,7 +78,7 @@ final class CoinDetailsViewController: UIViewController {
     private lazy var timePeriodControl: CoinDetailsSegmentControl = {
         let items = TimePeriod.allCases.map { $0.rawValue }
         let changeTime = CoinDetailsSegmentControl(items: items)
-        changeTime.backgroundColor = Colors.segmentedControlBackgronud
+        changeTime.backgroundColor = Colors.segmentedControlBackground
         changeTime.selectedSegmentTintColor = Colors.segmentedControlSelectedBackground
         changeTime.setDividerImage(
             UIImage(),
