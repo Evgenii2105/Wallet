@@ -8,7 +8,7 @@
 import Foundation
 
 final class CoinDetailsPresenterImpl: CoinDetailsPresenter {
-   
+    
     weak var view: CoinDetailsView?
     private let interactor: CoinDetailsInteractor
     

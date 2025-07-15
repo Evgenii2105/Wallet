@@ -34,3 +34,4 @@ final class CoinDetailsSegmentControl: UISegmentedControl {
         selectedSegment.layer.shadowOffset = CGSize(width: 0, height: 20)
     }
 }
+

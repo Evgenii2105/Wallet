@@ -133,7 +133,8 @@ final class CoinDetailsViewController: UIViewController {
     
     private let capitalPriceLabel: UILabel = {
         let capitalPriceLabel = UILabel()
-        capitalPriceLabel.text = "123.231"
+        capitalPriceLabel.adjustsFontSizeToFitWidth = true
+        capitalPriceLabel.minimumScaleFactor = 0.5
         capitalPriceLabel.textColor = .black
         capitalPriceLabel.font = Fonts.capitalPriceLabelFont
         capitalPriceLabel.textAlignment = .right
@@ -144,7 +145,8 @@ final class CoinDetailsViewController: UIViewController {
         let suplyLabel = UILabel()
         suplyLabel.font = Fonts.suplyLabelFont
         suplyLabel.textColor = .black
-        suplyLabel.text = "111.22BTC"
+        suplyLabel.adjustsFontSizeToFitWidth = true
+        suplyLabel.minimumScaleFactor = 0.5
         suplyLabel.textAlignment = .right
         return suplyLabel
     }()
@@ -160,6 +162,7 @@ final class CoinDetailsViewController: UIViewController {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fill
+        stack.spacing = 8
         return stack
     }()
     
@@ -167,6 +170,7 @@ final class CoinDetailsViewController: UIViewController {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fill
+        stack.spacing = 8
         return stack
     }()
     
@@ -240,11 +244,12 @@ private extension CoinDetailsViewController {
             make.trailing.equalTo(containerView).offset(-Constants.sixteenPadding)
             make.bottom.equalTo(containerView).offset(-Constants.sixteenPadding)
         }
-        capitalizationLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        capitalPriceLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
-        circulatingSuply.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        circulatingSuply.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        capitalPriceLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        capitalPriceLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        
+        suplyLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        suplyLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
     }
     
     func setupNavigationBar() {
@@ -302,8 +307,24 @@ private extension CoinDetailsViewController {
         return attributedString
     }
     
+    func formatSuplly(_ price: Double, coinDetails: CoinData) -> NSAttributedString {
+        let oldMaxDigits = Self.formatter.maximumFractionDigits
+        let oldMinDigits = Self.formatter.minimumFractionDigits
+        
+        Self.formatter.maximumFractionDigits = 2
+        Self.formatter.minimumFractionDigits = 0
+        
+        let formattedPrice = Self.formatter.string(from: NSNumber(value: price)) ?? ""
+        let coinShortName = coinDetails.symbol
+        
+        Self.formatter.maximumFractionDigits = oldMaxDigits
+        Self.formatter.minimumFractionDigits = oldMinDigits
+        
+        return NSAttributedString(string: "\(formattedPrice) \(coinShortName)")
+    }
+    
     func configure(coinDetails: CoinData, period: TimePeriod) {
-        navigationItem.title = coinDetails.name
+        navigationItem.title = "\(coinDetails.name) (\(coinDetails.symbol))"
         priceLabel.attributedText = formatPrice(coinDetails.metrics.marketData.priceUSD)
         switch period {
         case .day:
@@ -317,8 +338,8 @@ private extension CoinDetailsViewController {
         case .point:
             changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneYear ?? 0.0)
         }
-        capitalPriceLabel.text = "$231.233"
-        suplyLabel.text = "114.211 ETH"
+        capitalPriceLabel.attributedText = formatPrice(coinDetails.metrics.marketCap.currentMarketCapUSD)
+        suplyLabel.attributedText = formatSuplly(coinDetails.metrics.supply.circulating, coinDetails: coinDetails)
     }
 }
 
@@ -334,6 +355,6 @@ extension CoinDetailsViewController: CoinDetailsView {
 extension CoinDetailsViewController: UIGestureRecognizerDelegate {
     
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-           return true
-       }
+        return true
+    }
 }

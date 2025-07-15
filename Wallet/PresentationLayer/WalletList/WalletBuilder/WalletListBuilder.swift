@@ -25,7 +25,6 @@ final class WalletListBuilder {
         presenter.view = view
         router.viewController = view
         interactor.presenter = presenter
-        interactor.router = router
         
         return view
     }

@@ -27,7 +27,7 @@ final class WalletListInteractorImpl: WalletListInteractor {
     }
     
     weak var presenter: WalletListPresenterOutput?
-    var router: WalletListRouter
+    private var router: WalletListRouter
     private let dataManager: DataManagerService = DataManagerServiceImpl()
     private var coins: [CoinData] = []
     private weak var listener: WalletListListener?

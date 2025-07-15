@@ -16,7 +16,6 @@ final class LoginViewController: UIViewController {
         static let color = UIColor.white
         static let layerRadius: CGFloat = 24
         static let backgroundColorTextField = UIColor.white
-        
         static let textFieldHeight: CGFloat = 50
         static let leadingPadding: CGFloat = 8
         static let horizontalPadding: CGFloat = 32
@@ -139,6 +138,7 @@ final class LoginViewController: UIViewController {
 // MARK: - Private Extension
 
 private extension LoginViewController {
+    
     func setupUI() {
         view.backgroundColor = Colors.loginBackground
         view.addSubview(scrollView)
@@ -210,14 +210,18 @@ private extension LoginViewController {
     }
     
     func setupNotifications() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillShow),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillHide),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
     
     @objc

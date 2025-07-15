@@ -21,15 +21,9 @@ enum Fonts {
     static let priceCoinDetailsFont = UIFont(name: "Poppins-Medium", size: 24)!
     static let segmentedControlFont = UIFont(name: "Poppins-Regular", size: 14)!
     static let changeCoinDetailsFont = UIFont(name: "Poppins-Light", size: 18)!
-    
     static let marketLabelFont = UIFont(name: "Poppins-Medium", size: 22)!
-    
     static let capitalizationLabelFont = UIFont(name: "Poppins-Light", size: 18)!
-    
     static let circulatingSuplyFont = UIFont(name: "Poppins-Light", size: 18)!
-    
     static let capitalPriceLabelFont = UIFont(name: "Poppins-Medium", size: 18)!
-    
     static let suplyLabelFont = UIFont(name: "Poppins-Medium", size: 18)!
-    
 }
