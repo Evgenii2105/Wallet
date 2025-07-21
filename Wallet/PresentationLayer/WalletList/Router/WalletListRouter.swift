@@ -9,4 +9,5 @@ import Foundation
 
 protocol WalletListRouter: AnyObject {
     func showDetailsCoin(coin: CoinData)
+    func showError(alert: AlertContentPresentable)
 }

@@ -10,4 +10,6 @@ import Foundation
 protocol WalletListView: AnyObject {
     func didGet(walletListItems: [WalletListItem])
     func reconfigureHeader()
+    func hideLoadingIndicator()
+    func showLoadingIndicator()
 }

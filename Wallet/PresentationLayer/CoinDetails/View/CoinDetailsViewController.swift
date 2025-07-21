@@ -334,7 +334,7 @@ private extension CoinDetailsViewController {
         case .year:
             changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneMonth)
         case .all:
-            changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeThreeMonth)
+            changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeThreeMonth!)
         case .point:
             changePrice.attributedText = formatChangePrice(coinDetails.metrics.roiData.percentChangeOneYear ?? 0.0)
         }

@@ -19,4 +19,6 @@ protocol WalletListPresenter: AnyObject {
 protocol WalletListPresenterOutput: AnyObject {
     func didGet(walletListItems: [WalletListItem])
     func reconfigureMenu()
+    func hideLoadingIndicator()
+    func showLoadingIndicator()
 }

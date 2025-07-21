@@ -10,7 +10,7 @@ import Foundation
 struct RoiData: Decodable {
     let percentChangeOneWeek: Double
     let percentChangeOneMonth: Double
-    let percentChangeThreeMonth: Double
+    let percentChangeThreeMonth: Double?
     let percentChangeOneYear: Double?
     
     enum CodingKeys: String, CodingKey {
@@ -24,7 +24,7 @@ struct RoiData: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.percentChangeOneWeek = try container.decode(Double.self, forKey: .percentChangeOneWeek)
         self.percentChangeOneMonth = try container.decode(Double.self, forKey: .percentChangeOneMonth)
-        self.percentChangeThreeMonth = try container.decode(Double.self, forKey: .percentChangeThreeMonth)
+        self.percentChangeThreeMonth = try container.decodeIfPresent(Double.self, forKey: .percentChangeThreeMonth)
         self.percentChangeOneYear = try container.decodeIfPresent(Double.self, forKey: .percentChangeOneYear)
     }
 }

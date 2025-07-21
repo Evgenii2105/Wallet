@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Foundation
 
 struct WalletListItem {
     let id: String

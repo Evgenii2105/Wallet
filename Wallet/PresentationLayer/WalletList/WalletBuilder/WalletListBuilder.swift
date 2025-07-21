@@ -14,6 +14,7 @@ final class WalletListBuilder {
         let router = WalletListRouterImpl()
         let interactor = WalletListInteractorImpl(
             userStorage: userStorage,
+            alertFactory: AlertFactoryServiceImpl(),
             router: router,
             listener: listener
         )

@@ -39,7 +39,7 @@ final class LoginInteractorImpl: LoginInteractor {
 }
 
 extension LoginInteractorImpl: AlertActionHandler {
-    func handleAlertCancelAction() {
+    func handleActions() {
         presenter?.clearTextField()
     }
 }

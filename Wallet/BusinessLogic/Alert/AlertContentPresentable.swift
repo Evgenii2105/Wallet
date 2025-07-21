@@ -8,7 +8,7 @@
 import UIKit
 
 protocol AlertActionHandler: AnyObject {
-    func handleAlertCancelAction()
+    func handleActions()
 }
 
 protocol AlertContentPresentable {
@@ -18,6 +18,11 @@ protocol AlertContentPresentable {
 
 protocol AlertFactoryService: AnyObject {
     func failureLoginIsEmpty(message: String, handler: AlertActionHandler) -> AlertContentPresentable
+    func showNetworkError(
+        message: String,
+        cancelHandler: @escaping () -> Void,
+        repeatHandler: @escaping () -> Void,
+    ) -> AlertContentPresentable
 }
 
 struct AlertContent: AlertContentPresentable {
@@ -38,10 +43,43 @@ final class AlertFactoryServiceImpl: AlertFactoryService {
             title: "Отменить",
             style: .destructive,
             handler: { _ in
-                handler.handleAlertCancelAction()
+                handler.handleActions()
             })
         )
         alert.addAction(UIAlertAction(title: "Повторить", style: .cancel))
+        
+        return AlertContent(
+            alert: alert,
+            isAnimated: true
+        )
+    }
+    
+    func showNetworkError(
+        message: String,
+        cancelHandler: @escaping () -> Void,
+        repeatHandler: @escaping () -> Void
+    ) -> AlertContentPresentable {
+        let alert = UIAlertController(
+            title: "Ошибка",
+            message: "Отсутвует подключение к интернету",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(
+            title: "Отменить",
+            style: .cancel,
+            handler: { _ in
+                cancelHandler()
+            })
+        )
+        
+        alert.addAction(UIAlertAction(
+            title: "Повторить",
+            style: .default,
+            handler: { _ in
+                repeatHandler()
+            })
+        )
         
         return AlertContent(
             alert: alert,

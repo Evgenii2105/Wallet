@@ -8,7 +8,7 @@
 import UIKit
 
 final class WalletListInteractorImpl: WalletListInteractor {
-    
+
     enum CoinsSorting: CaseIterable {
         case sortDefault
         case sortDescending
@@ -33,26 +33,38 @@ final class WalletListInteractorImpl: WalletListInteractor {
     private weak var listener: WalletListListener?
     private var currentSorted: CoinsSorting = .sortDefault
     private let userStorage: UserStorage
+    private var alertFactory: AlertFactoryService
     
-    init(userStorage: UserStorage, router: WalletListRouter, listener: WalletListListener?) {
+    init(userStorage: UserStorage, alertFactory: AlertFactoryService, router: WalletListRouter, listener: WalletListListener?) {
         self.userStorage = userStorage
+        self.alertFactory = alertFactory
         self.router = router
         self.listener = listener
     }
     
     func setupDataSource() {
+        presenter?.showLoadingIndicator()
         dataManager.getCoins { [weak self] result in
-            guard let self else { return }
             DispatchQueue.main.async {
                 switch result {
                 case .success(let coinsData):
-                    self.coins = coinsData
+                    self?.coins = coinsData
                     let walletListItems = coinsData.map({
                         $0.mapToItem()
                     })
-                    self.presenter?.didGet(walletListItems: walletListItems)
+                    self?.presenter?.didGet(walletListItems: walletListItems)
                 case .failure(let error):
                     print(error)
+                    let alert = self?.alertFactory.showNetworkError(
+                        message: "Ошибка") {
+                            print("Отмена")
+                        } repeatHandler: {
+                            
+                            self?.setupDataSource()
+                        }
+                    guard let alert else { return }
+                    self?.router.showError(alert: alert)
+                    self?.presenter?.hideLoadingIndicator()
                 }
             }
         }

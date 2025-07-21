@@ -8,7 +8,7 @@
 import UIKit
 
 final class WalletListRouterImpl: WalletListRouter {
-
+   
     weak var viewController: UIViewController?
     
     func showDetailsCoin(coin: CoinData) {
@@ -27,5 +27,9 @@ final class WalletListRouterImpl: WalletListRouter {
         router.viewController = view
         
         viewController?.navigationController?.pushViewController(view, animated: true)
+    }
+    
+    func showError(alert: AlertContentPresentable) {
+        viewController?.present(alert.alert, animated: alert.isAnimated)
     }
 }

@@ -129,7 +129,6 @@ final class WalletListViewController: UIViewController {
         setupUI()
         setupConstraints()
         createCoinsTable()
-        showLoading()
         presenter?.setupDataSource()
     }
 }
@@ -138,6 +137,14 @@ final class WalletListViewController: UIViewController {
 
 extension WalletListViewController: WalletListView {
     
+    func showLoadingIndicator() {
+        showLoading()
+    }
+    
+    func hideLoadingIndicator() {
+        hideLoading()
+    }
+
     func didGet(walletListItems: [WalletListItem]) {
         self.coins = walletListItems
         hideLoading()

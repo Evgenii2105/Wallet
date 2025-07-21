@@ -52,11 +52,19 @@ final class WalletListPresenterImpl: WalletListPresenter {
 
 extension WalletListPresenterImpl: WalletListPresenterOutput {
     
+    func hideLoadingIndicator() {
+        view?.hideLoadingIndicator()
+    }
+    
     func reconfigureMenu() {
         view?.reconfigureHeader()
     }
     
     func didGet(walletListItems: [WalletListItem]) {
         view?.didGet(walletListItems: walletListItems)
+    }
+    
+    func showLoadingIndicator() {
+        view?.showLoadingIndicator()
     }
 }

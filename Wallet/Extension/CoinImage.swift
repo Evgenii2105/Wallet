@@ -28,6 +28,8 @@ enum CoinImage: String {
     case weth = "WETH"
     case xlm = "XLM"
     case leo = "LEO"
+    case wagmi = "wagmi"
+    case hedera = "HBAR"
     
     var image: UIImage {
         switch self {
@@ -71,6 +73,10 @@ enum CoinImage: String {
             return UIImage(systemName: "kipsign.circle")!.withTintColor(color, renderingMode: .alwaysOriginal)
         case .leo:
             return UIImage(systemName: "larisign.circle")!.withTintColor(color, renderingMode: .alwaysOriginal)
+        case .wagmi:
+            return UIImage(systemName: "francsign.circle")!.withTintColor(color, renderingMode: .alwaysOriginal)
+        case .hedera:
+            return UIImage(systemName: "dollarsign.circle")!.withTintColor(color, renderingMode: .alwaysOriginal)
         }
     }
     
@@ -116,6 +122,10 @@ enum CoinImage: String {
             return .systemTeal
         case .leo:
             return .systemIndigo
+        case .wagmi:
+            return .lightGray
+        case .hedera:
+            return .orange
         }
     }
 }
