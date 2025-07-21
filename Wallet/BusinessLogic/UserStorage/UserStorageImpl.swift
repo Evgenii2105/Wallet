@@ -1,0 +1,58 @@
+//
+//  UserStorageImpl.swift
+//  Wallet
+//
+//  Created by Евгений Фомичев on 02.07.2025.
+//
+
+import Foundation
+
+protocol UserStorage: AnyObject {
+    var isUserLoggedIn: Bool { get }
+    func logout()
+}
+
+final class UserStorageImpl: UserStorage {
+    
+    // MARK: Internal Properties
+    
+    enum ValidationState {
+        case success
+        case wrongPassword
+    }
+    
+    // MARK: Private Properties
+    
+    private let hardcodedLogin = "1234"
+    private let hardcodedPassword = "1234"
+    
+    var isUserLoggedIn: Bool {
+        guard userDefaults.object(forKey: "isUserLoggedIn") != nil else { return false }
+        return UserDefaults.standard.bool(forKey: "isUserLoggedIn")
+    }
+    
+    private let userDefaults = UserDefaults.standard
+    
+    init() {
+    }
+    
+    // MARK: Func
+    
+    func loginUser() {
+        userDefaults.set(true, forKey: "isUserLoggedIn")
+        userDefaults.synchronize()
+    }
+    
+    func logout() {
+        userDefaults.set(false, forKey: "isUserLoggedIn")
+        userDefaults.synchronize()
+    }
+    
+    func validateUserPassword(login: String, password: String) -> ValidationState {
+        if login == hardcodedLogin && password == hardcodedPassword {
+            loginUser()
+            return .success
+        }
+        return .wrongPassword
+    }
+}
